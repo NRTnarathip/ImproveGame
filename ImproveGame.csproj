@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <EnableHarmony>true</EnableHarmony>
+    <TargetFramework>net5.0</TargetFramework>
+    <Configurations>Debug;Release;Mobile</Configurations>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\..\smapi-internal 1.5.6.52\0Harmony.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

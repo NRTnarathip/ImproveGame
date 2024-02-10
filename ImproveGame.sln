@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImproveGame", "ImproveGame.csproj", "{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Mobile|Any CPU = Mobile|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Mobile|Any CPU.ActiveCfg = Mobile|Any CPU
+		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Mobile|Any CPU.Build.0 = Mobile|Any CPU
+		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {520DFF37-7B7C-456B-B915-1B1BABCE919B}
+	EndGlobalSection
+EndGlobal
