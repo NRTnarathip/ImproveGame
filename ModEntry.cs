@@ -17,8 +17,7 @@ namespace StardewValleyThaiMobile
         public override void Entry(IModHelper helper)
         {
             Instance = this;
-            harmony = new Harmony("com.nrt.stardewvalley");
-            Harmony.DEBUG = true;
+            harmony = new Harmony(ModManifest.UniqueID);
 
             gameMobilePatcher = new();
 
