@@ -1,16 +1,20 @@
 ﻿using HarmonyLib;
+using ImproveGame.Patcher;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
 using StardewValley.Menus;
-using StardewValleyThaiMobile.Patcher;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
-namespace StardewValleyThaiMobile.Patcher
+[assembly: InternalsVisibleTo("SMAPI.Toolkit")]
+
+
+
+namespace ImproveGame.Patcher
 {
     [HarmonyPatch(typeof(SpriteText))]
     class SpriteTextPatch : IModPatcher
@@ -87,13 +91,14 @@ namespace StardewValleyThaiMobile.Patcher
     }
 
 }
-namespace StardewValleyThaiMobile
+namespace ImproveGame
 {
     public abstract class IModPatcher
     {
+
         public static ModEntry modEntry => ModEntry.Instance;
         public static Harmony harmony => modEntry.harmony;
-        public static void Log(string msg) => modEntry.Log(msg);
+        public static void Log(string msg) => ModEntry.Log(msg);
         public static MethodInfo Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null)
             => harmony.Patch(original, prefix, postfix);
 
@@ -136,23 +141,30 @@ namespace StardewValleyThaiMobile
 
                 var StartupPreferencesClassType = typeof(StartupPreferences);
                 var _SetLanguageFromCodeMethod = StartupPreferencesClassType.GetMethod("_SetLanguageFromCode", BindingFlags.NonPublic | BindingFlags.Instance);
-                Log($"_SetLanguageFromCodeMethod: {_SetLanguageFromCodeMethod}");
+                //Log($"_SetLanguageFromCodeMethod: {_SetLanguageFromCodeMethod}");
+                //Patch(_SetLanguageFromCodeMethod, prefix: nameof(PrefixSetLangFromCode));
+            }
 
-                Patch(_SetLanguageFromCodeMethod, prefix: nameof(PrefixSetLangFromCode));
+
+            {
+                //var consoleClass = typeof(Console);
+                //var flags = BindingFlags.Default;
+                //foreach (BindingFlags f in Enum.GetValues(typeof(BindingFlags)))
+                //    flags = flags | f;
+                //var writeLineMethod = consoleClass.GetMethod(nameof(Console.WriteLine), flags, null, new Type[] { typeof(string), }, null);
+                //Patch(writeLineMethod, nameof(PrefixWriteLine));
+            }
+            {
+
+                //var core = assembly.GetType("StardewModdingAPI.Framework.SCore", true);
+                //Log(core.Namespace);
             }
         }
-        public static void PrefixSetLangFromCode(StartupPreferences __instance, string language_code_string)
+
+        public static bool PrefixWriteLine(string? value)
         {
-            return;
-            Log($"prefix _SetLanguageFromCodeMethod");
-            Log($"language_code_string: {language_code_string}");
-            StackTrace stackTrace = new StackTrace();
-            int stackIndex = 0;
-            foreach (var stack in stackTrace.GetFrames())
-            {
-                Log($"index: {stackIndex} func: {stack.GetMethod().Name}");
-                stackIndex++;
-            }
+            Log($"On ConsoleWriteLine: {value}");
+            return true;
         }
     }
 }
