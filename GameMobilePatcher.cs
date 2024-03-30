@@ -97,7 +97,7 @@ namespace ImproveGame
     {
 
         public static ModEntry modEntry => ModEntry.Instance;
-        public static Harmony harmony => modEntry.harmony;
+        public static Harmony harmony => modEntry.Harmony;
         public static void Log(string msg) => ModEntry.Log(msg);
         public static MethodInfo Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null)
             => harmony.Patch(original, prefix, postfix);
@@ -128,7 +128,7 @@ namespace ImproveGame
         public GameMobilePatcher()
         {
             Instance = this;
-            harmony = modEntry.harmony;
+            harmony = modEntry.Harmony;
             //patch all with attribute
             harmony.PatchAll();
 
