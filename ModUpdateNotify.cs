@@ -60,7 +60,7 @@ namespace ImproveGame
             }
             catch (Exception e)
             {
-                ModEntry.Instance.Monitor.Log("Can't check update on github " + e.Message, LogLevel.Error);
+                ModEntry.Instance.Monitor.Log("Can't check update on github " + e.Message, LogLevel.Debug);
             }
         }
         public static void PrintCheckUpdate(IManifest manifest, ManifestSerialize manifestLatest, NotifyUpdateLevel notifyLevel, Mod mod)

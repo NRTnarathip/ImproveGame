@@ -47,7 +47,8 @@ namespace ImproveGame
             helper.ConsoleCommands.Add("lm", "Set langauge to Mod.", this.SetLanguageToMod);
             helper.ConsoleCommands.Add("en", "Set langauge to English.", this.SetLanguageToEnglish);
             helper.Events.Content.AssetReady += handleOnModLangageLoaded;
-            ModUpdateNotify.CheckUpdateOnGithub(new(this), ManifestURL);
+            //bug
+            //ModUpdateNotify.CheckUpdateOnGithub(new(this), ManifestURL);
         }
 
         //Mod language
@@ -56,7 +57,7 @@ namespace ImproveGame
             //patch force use mod language if is found
             if (e.Name.ToString().Equals("Data/AdditionalLanguages"))
             {
-                Log("Mod Langauage it's are ready!", LangaugeModLogLevel);
+                Log("This mod ready to check mod language!", LangaugeModLogLevel);
                 //check if mod is not valid & restore lang with preference
                 //fource mod lang
 
