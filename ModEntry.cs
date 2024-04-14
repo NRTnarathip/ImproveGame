@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using ImproveGame.ThaiFont;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -47,8 +48,10 @@ namespace ImproveGame
             helper.ConsoleCommands.Add("lm", "Set langauge to Mod.", this.SetLanguageToMod);
             helper.ConsoleCommands.Add("en", "Set langauge to English.", this.SetLanguageToEnglish);
             helper.Events.Content.AssetReady += handleOnModLangageLoaded;
+
             //bug
             //ModUpdateNotify.CheckUpdateOnGithub(new(this), ManifestURL);
+            ThaiFontFix.Init();
         }
 
         //Mod language

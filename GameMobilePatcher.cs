@@ -5,8 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
 using StardewValley.Menus;
-using System;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -41,20 +39,12 @@ namespace ImproveGame.Patcher
 
             {
                 var UtilityTypeInfo = typeof(Utility);
-                Type[] paramTypes = new Type[]
-                {
-                    typeof(SpriteBatch),
-                    typeof(string),
-                    typeof(SpriteFont),
-                    typeof(Vector2),
-                    typeof(Color),
-                    typeof(float),
-                    typeof(float),
-                    typeof(int),
-                    typeof(int),
-                    typeof(float),
-                    typeof(int)
-                };
+                Type[] paramTypes =
+                [
+                    typeof(SpriteBatch), typeof(string), typeof(SpriteFont),
+                    typeof(Vector2), typeof(Color), typeof(float), typeof(float),
+                    typeof(int), typeof(int), typeof(float), typeof(int)
+                ];
                 var drawTextWithShadowMethod = UtilityTypeInfo.GetMethod(nameof(Utility.drawTextWithShadow), paramTypes);
                 Patch(drawTextWithShadowMethod, nameof(PrefixDrawTextWithShadow));
             }
@@ -132,39 +122,8 @@ namespace ImproveGame
             //patch all with attribute
             harmony.PatchAll();
 
-
             //Patch all manual
             dayTimeMoneyBoxPatch = new();
-
-            //test code
-            {
-
-                var StartupPreferencesClassType = typeof(StartupPreferences);
-                var _SetLanguageFromCodeMethod = StartupPreferencesClassType.GetMethod("_SetLanguageFromCode", BindingFlags.NonPublic | BindingFlags.Instance);
-                //Log($"_SetLanguageFromCodeMethod: {_SetLanguageFromCodeMethod}");
-                //Patch(_SetLanguageFromCodeMethod, prefix: nameof(PrefixSetLangFromCode));
-            }
-
-
-            {
-                //var consoleClass = typeof(Console);
-                //var flags = BindingFlags.Default;
-                //foreach (BindingFlags f in Enum.GetValues(typeof(BindingFlags)))
-                //    flags = flags | f;
-                //var writeLineMethod = consoleClass.GetMethod(nameof(Console.WriteLine), flags, null, new Type[] { typeof(string), }, null);
-                //Patch(writeLineMethod, nameof(PrefixWriteLine));
-            }
-            {
-
-                //var core = assembly.GetType("StardewModdingAPI.Framework.SCore", true);
-                //Log(core.Namespace);
-            }
-        }
-
-        public static bool PrefixWriteLine(string? value)
-        {
-            Log($"On ConsoleWriteLine: {value}");
-            return true;
         }
     }
 }

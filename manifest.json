@@ -1,8 +1,8 @@
 {
   "Name": "Improve Game",
   "Author": "NRTnarathip",
-  "Version": "0.1.4",
-  "Description": "Improve & Fix Bug Game System",
+  "Version": "0.2.0",
+  "Description": "Improve & Mod Language",
   "UniqueID": "NRTnarathip.ImproveGame",
   "EntryDll": "ImproveGame.dll",
   "MinimumApiVersion": "3.18.3",
