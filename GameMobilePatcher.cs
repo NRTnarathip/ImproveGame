@@ -1,40 +1,36 @@
 ﻿using HarmonyLib;
-using ImproveGame.Patcher;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
 using StardewValley.Menus;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("SMAPI.Toolkit")]
-
-
-
-namespace ImproveGame.Patcher
+namespace ImproveGame
 {
-    [HarmonyPatch(typeof(SpriteText))]
-    class SpriteTextPatch : IModPatcher
+    [HarmonyPatch]
+    class SpriteTextPatch
     {
         [HarmonyPostfix]
-        [HarmonyPatch("shrinkFont")]
-        public static void AfterShrinkFont(bool shrink)
+        [HarmonyPatch(typeof(SpriteText), "shrinkFont")]
+        static void AfterShrinkFont(bool shrink)
         {
             var langMod = LocalizedContentManager.CurrentModLanguage;
-            if (langMod == null) return;
+            Console.WriteLine("SV: lang mod?: " + langMod);
+            if (langMod == null)
+                return;
 
             SpriteText.fontPixelZoom = langMod.FontPixelZoom;
+            Console.WriteLine("SV: set font pixel zoom: " + SpriteText.fontPixelZoom);
         }
     }
-    public class DayTimeMoneyBoxPatch : IModPatcher
+    public static class DayTimeMoneyBoxThaiFormat
     {
-        public DayTimeMoneyBoxPatch()
+        public static void Init(Harmony harmony)
         {
+            var ThisType = typeof(DayTimeMoneyBox);
             {
-                var DayTimeMoneyBoxType = typeof(DayTimeMoneyBox);
-                var DayTimeMoneyBoxDrawMethod = DayTimeMoneyBoxType.GetMethod("draw", new Type[] { typeof(SpriteBatch) });
-                Patch(DayTimeMoneyBoxDrawMethod, prefix: nameof(HookStartDraw), postfix: nameof(HookEndDraw));
+                var DayTimeMoneyBoxDrawMethod = ThisType.GetMethod("draw", [typeof(SpriteBatch)]);
+                harmony.Patch(DayTimeMoneyBoxDrawMethod, new(ThisType.GetMethod(nameof(PrefixSpriteBatchDraw))));
             }
 
             {
@@ -46,18 +42,19 @@ namespace ImproveGame.Patcher
                     typeof(int), typeof(int), typeof(float), typeof(int)
                 ];
                 var drawTextWithShadowMethod = UtilityTypeInfo.GetMethod(nameof(Utility.drawTextWithShadow), paramTypes);
-                Patch(drawTextWithShadowMethod, nameof(PrefixDrawTextWithShadow));
+                harmony.Patch(drawTextWithShadowMethod, new(ThisType.GetMethod(nameof(PrefixDrawTextWithShadow))));
             }
         }
         public static int CallStack_drawTextWithShadow_Count = 0;
 
-        public static void HookStartDraw(DayTimeMoneyBox __instance, SpriteBatch b)
+        public static void PrefixSpriteBatchDraw(SpriteBatch b)
         {
             CallStack_drawTextWithShadow_Count = 0;
         }
-        public static void HookEndDraw(DayTimeMoneyBox __instance, SpriteBatch b)
+        public static void HookEndDraw(SpriteBatch b)
         {
             //Log($"done draw stack: {CallStack_drawTextWithShadow_Count}");
+
         }
 
         public static void PrefixDrawTextWithShadow(SpriteBatch b, ref string text, SpriteFont font, Vector2 position, Color color, float scale = 1f, float layerDepth = -1f,
@@ -80,50 +77,4 @@ namespace ImproveGame.Patcher
         }
     }
 
-}
-namespace ImproveGame
-{
-    public abstract class IModPatcher
-    {
-
-        public static ModEntry modEntry => ModEntry.Instance;
-        public static Harmony harmony => modEntry.Harmony;
-        public static void Log(string msg) => ModEntry.Log(msg);
-        public static MethodInfo Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null)
-            => harmony.Patch(original, prefix, postfix);
-
-        public static MethodInfo Patch(MethodBase original, Type patcherType, string prefix = default, string postfix = default)
-            //prefix function with self name
-            => harmony.Patch(original,
-                prefix != default ? new(patcherType.GetMethod(prefix)) : null,
-                postfix != default ? new(patcherType.GetMethod(postfix)) : null);
-
-        public Type[] GetParameterTypes(Type classType, string funcName)
-            => classType.GetMethod(funcName).GetParameters().
-            Where(p => p.Name[0] != '_').
-            Select(p => p.ParameterType).ToArray();
-
-        public Type[] GetParameterTypes(string funcName) => GetParameterTypes(GetType(), funcName);
-
-        public MethodInfo Patch(MethodBase original, string prefix = default, string postfix = default)
-            => Patch(original, this.GetType(), prefix, postfix);
-    }
-
-    //Fix Bug & Pactch Code within Internal Game System
-    public class GameMobilePatcher : IModPatcher
-    {
-        public static GameMobilePatcher Instance { get; private set; }
-        Harmony harmony;
-        DayTimeMoneyBoxPatch dayTimeMoneyBoxPatch;
-        public GameMobilePatcher()
-        {
-            Instance = this;
-            harmony = modEntry.Harmony;
-            //patch all with attribute
-            harmony.PatchAll();
-
-            //Patch all manual
-            dayTimeMoneyBoxPatch = new();
-        }
-    }
 }

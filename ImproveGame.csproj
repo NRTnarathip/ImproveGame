@@ -8,12 +8,27 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.1" />
+	  <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Reference Include="0Harmony">
-	    <HintPath>..\..\SMAPI Android\Harmony\HarmonyAndroid\bin\Release\0Harmony.dll</HintPath>
+	    <HintPath>..\..\SMAPI Android\SMAPI-3.18.6\SMAPI\bin\Release\0Harmony.dll</HintPath>
+	  </Reference>
+	  <Reference Include="MonoGame.Framework">
+	    <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\MonoGame.Framework.dll</HintPath>
+	  </Reference>
+	  <Reference Include="StardewModdingAPI">
+	    <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\StardewModdingAPI.dll</HintPath>
+	  </Reference>
+	  <Reference Include="StardewValley">
+	    <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Stardew Valley.dll</HintPath>
+	  </Reference>
+	  <Reference Include="StardewValley.GameData">
+	    <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\StardewValley.GameData.dll</HintPath>
+	  </Reference>
+	  <Reference Include="xTile">
+	    <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\xTile.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 
@@ -22,5 +37,4 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
-
 </Project>
