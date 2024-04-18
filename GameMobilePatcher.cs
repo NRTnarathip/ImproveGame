@@ -27,12 +27,12 @@ namespace ImproveGame
     {
         public static void Init(Harmony harmony)
         {
-            var ThisType = typeof(DayTimeMoneyBox);
             {
-                var DayTimeMoneyBoxDrawMethod = ThisType.GetMethod("draw", [typeof(SpriteBatch)]);
-                harmony.Patch(DayTimeMoneyBoxDrawMethod, new(ThisType.GetMethod(nameof(PrefixSpriteBatchDraw))));
+                var DayTimeMoneyBoxDrawMethod = typeof(DayTimeMoneyBox).GetMethod("draw", [typeof(SpriteBatch)]);
+                harmony.Patch(
+                    original: DayTimeMoneyBoxDrawMethod,
+                    prefix: new(typeof(DayTimeMoneyBoxThaiFormat).GetMethod(nameof(PrefixSpriteBatchDraw))));
             }
-
             {
                 var UtilityTypeInfo = typeof(Utility);
                 Type[] paramTypes =
@@ -42,7 +42,9 @@ namespace ImproveGame
                     typeof(int), typeof(int), typeof(float), typeof(int)
                 ];
                 var drawTextWithShadowMethod = UtilityTypeInfo.GetMethod(nameof(Utility.drawTextWithShadow), paramTypes);
-                harmony.Patch(drawTextWithShadowMethod, new(ThisType.GetMethod(nameof(PrefixDrawTextWithShadow))));
+                harmony.Patch(
+                    original: drawTextWithShadowMethod,
+                    prefix: new(typeof(DayTimeMoneyBoxThaiFormat).GetMethod(nameof(PrefixDrawTextWithShadow))));
             }
         }
         public static int CallStack_drawTextWithShadow_Count = 0;
@@ -54,7 +56,6 @@ namespace ImproveGame
         public static void HookEndDraw(SpriteBatch b)
         {
             //Log($"done draw stack: {CallStack_drawTextWithShadow_Count}");
-
         }
 
         public static void PrefixDrawTextWithShadow(SpriteBatch b, ref string text, SpriteFont font, Vector2 position, Color color, float scale = 1f, float layerDepth = -1f,
@@ -70,11 +71,9 @@ namespace ImproveGame
                 {
                     text = LocalizedContentManager.FormatTimeString(Game1.timeOfDay,
                         LocalizedContentManager.CurrentModLanguage.TimeFormat).ToString();
-                    return;
                 }
             }
-
         }
-    }
 
+    }
 }
