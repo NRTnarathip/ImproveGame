@@ -91,6 +91,7 @@ public sealed class ModEntry : Mod
             Monitor.Log("Not support multi mod language!!. Please delete theme", LogLevel.Error);
             return false;
         }
+
         return true;
     }
     public void PrintLanguageInfo()
