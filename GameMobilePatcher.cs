@@ -1,9 +1,13 @@
 ﻿using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
 using StardewValley.Menus;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace ImproveGame
 {
@@ -21,6 +25,118 @@ namespace ImproveGame
 
             SpriteText.fontPixelZoom = langMod.FontPixelZoom;
             Console.WriteLine("SV: set font pixel zoom: " + SpriteText.fontPixelZoom);
+        }
+    }
+
+    [HarmonyPatch]
+    class FixJoystickCrash
+    {
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(PurchaseAnimalsMenu), "shouldClampGamePadCursor")]
+        static void PurchaseAnimalsMenushouldClampGamePadCursor(ref bool __result)
+        {
+            __result = false;
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(CarpenterMenu), "shouldClampGamePadCursor")]
+        static void CarpenterMenushouldClampGamePadCursor(ref bool __result)
+        {
+            __result = false;
+        }
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(MuseumMenu), "shouldClampGamePadCursor")]
+        static void MeseumMenushouldClampGamePadCursor(ref bool __result)
+        {
+            __result = false;
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(RenovateMenu), "shouldClampGamePadCursor")]
+        static void RenovateMenushouldClampGamePadCursor(ref bool __result)
+        {
+            __result = false;
+        }
+    }
+
+    [HarmonyPatch]
+    class MuseumMenuPatch
+    {
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(InputState), "SetMousePosition")]
+        static void PostfixSetMousePosition(int x, int y)
+        {
+            Console.WriteLine($"[Fixbug] Postfix Set Mouse Pos: : " + x + ", " + y);
+            var stacktrace = new StackTrace();
+            bool flag3 = false;
+            if (Game1.options.gamepadControls && Game1.activeClickableMenu != null && Game1.activeClickableMenu.shouldClampGamePadCursor())
+            {
+                flag3 = true;
+                Console.WriteLine("Fixbug] is should set mosue pos raw");
+            }
+            //foreach (var f in stacktrace.GetFrames())
+            //{
+            //    var method = f.GetMethod();
+            //    Console.WriteLine($"[Fixbug] frame: {method.DeclaringType}.{method.Name}");
+            //}
+        }
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(InputState), "UpdateStates")]
+        static void PostfixUpdateStates()
+        {
+            //return;
+
+            var touchState = Game1.input.GetTouchState;
+            if (touchState.Count > 0)
+            {
+                Console.WriteLine($"[Fixbug] Postfix Update States Ticks: " + Game1.ticks);
+                Console.WriteLine($"[Fixbug] touch state count: {touchState.Count}");
+                TouchLocation touchLocation = touchState[0];
+                Console.WriteLine("[Fixbug] touch 0 pos: " + touchLocation.Position);
+                var mouseState = Game1.input.GetMouseState();
+                Console.WriteLine("[Fixbug] GmaeInput mouse state pose: " + mouseState.Position);
+
+                var inputStateType = typeof(InputState);
+                var fieldInfo = inputStateType.GetField("_currentMouseState",
+                    BindingFlags.NonPublic | BindingFlags.Instance);
+                var currentMouseStateValue = (MouseState)fieldInfo.GetValue(Game1.input);
+                Console.WriteLine("[Fixbug] current mouse state pose: " + mouseState.Position);
+                Console.WriteLine("[Fixbug] is game pad controlls: " + Game1.options.gamepadControls);
+                var menu = Game1.activeClickableMenu;
+                if (menu != null)
+                {
+                    Console.WriteLine("[Fixbug] shouldClampGamePadCursor: " + Game1.activeClickableMenu.shouldClampGamePadCursor());
+                }
+            }
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(MuseumMenu), "receiveLeftClick")]
+        static void PrefixreceiveLeftClick(int x, int y, bool playSound = true)
+        {
+            return;
+
+            var menu = Game1.activeClickableMenu as MuseumMenu;
+            Console.WriteLine("[NRT Fixbug] Prefix receiveLeftClick");
+
+            var btn = menu.upperRightCloseButton;
+            bool isCanClose = btn != null && btn.containsPoint(x, y);
+            bool isClickAtRectBTN = btn.containsPoint(x, y);
+            Console.WriteLine("[Fixbug] isCanClose: " + isCanClose);
+            Console.WriteLine($"[Fixbug] click x: {x},y: {y}");
+            Console.WriteLine($"[Fixbug] mouse pos: {Game1.getMousePosition()}");
+            var touchState = Game1.input.GetTouchState;
+            Console.WriteLine($"[Fixbug] touch state count: {touchState.Count}");
+            TouchLocation touchLocation = touchState[0];
+            Console.WriteLine("[Fixbug] touch 0 pos: " + touchLocation.Position);
+            var mouseState = Game1.input.GetMouseState();
+            Console.WriteLine("Mouse State position: " + mouseState.Position);
+            if (!Game1.game1.IsMainInstance)
+            {
+                Console.WriteLine("is not main instance!!!");
+            }
         }
     }
     public static class DayTimeMoneyBoxThaiFormat

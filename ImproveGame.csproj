@@ -21,9 +21,6 @@
 	  <Reference Include="StardewModdingAPI">
 	    <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\StardewModdingAPI.dll</HintPath>
 	  </Reference>
-	  <Reference Include="StardewValley">
-	    <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Stardew Valley.dll</HintPath>
-	  </Reference>
 	  <Reference Include="StardewValley.GameData">
 	    <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\StardewValley.GameData.dll</HintPath>
 	  </Reference>
@@ -37,4 +34,8 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="&quot;$(ProjectDir)PostBuild.cmd&quot;" />
+	</Target>
 </Project>
