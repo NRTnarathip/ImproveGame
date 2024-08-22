@@ -13,10 +13,10 @@ namespace ImproveGame
         {
             if (o.GetType().Name.Contains("MapCompanion"))
             {
-                Console.WriteLine("nrt debug] npc name: " + o.name);
-                Console.WriteLine("nrt debug] npc type: " + o.GetType());
-                Console.WriteLine("nrt debug] isnullable: " + isNullable);
-                Console.WriteLine("nrt debug] needType: " + needType);
+                //Console.WriteLine("nrt debug] npc name: " + o.name);
+                //Console.WriteLine("nrt debug] npc type: " + o.GetType());
+                //Console.WriteLine("nrt debug] isnullable: " + isNullable);
+                //Console.WriteLine("nrt debug] needType: " + needType);
                 return false;
             }
 
