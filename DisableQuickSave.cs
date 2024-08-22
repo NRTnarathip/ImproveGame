@@ -6,9 +6,24 @@ using System.Reflection;
 
 namespace ImproveGame
 {
-    [HarmonyPatch]
     class DisableQuickSave
     {
+        static bool _initialized;
+        public static void TryInitialize(Harmony harmony)
+        {
+            if (_initialized)
+                return;
+            _initialized = true;
+
+            var updateContentPositionsMethod = OptionsPageType.GetMethod("updateContentPositions",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            harmony.Patch(updateContentPositionsMethod,
+                prefix: new(typeof(DisableQuickSave).GetMethod(nameof(Prefix_updateContentPositions))));
+
+            var saveWholeBackup = typeof(Game1).GetMethod(nameof(Game1.saveWholeBackup));
+            harmony.Patch(saveWholeBackup,
+                prefix: new(typeof(DisableQuickSave).GetMethod(nameof(Prefix_saveWholeBackup))));
+        }
         static Type OptionsPageType = typeof(OptionsPage);
         static FieldInfo optionsFieldInfo = OptionsPageType.GetField("options",
             BindingFlags.Instance | BindingFlags.NonPublic);
@@ -21,15 +36,14 @@ namespace ImproveGame
 
         const string ButtonBlockLabelText = "Blocked On Mod FarmTypeManager";
         static OptionsButton lastEditButton;
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(OptionsPage), "updateContentPositions")]
-        static void Prefix_updateContentPositions(OptionsPage __instance)
+        public static void Prefix_updateContentPositions(OptionsPage __instance)
         {
             var options = optionsFieldInfo.GetValue(__instance) as List<OptionsElement>;
             if (options[2] is OptionsButton btn)
             {
                 if (lastEditButton == btn)
                     return;
+
                 lastEditButton = btn;
 
                 btnLabelFieldInfo.SetValue(btn, ButtonBlockLabelText);
@@ -41,6 +55,12 @@ namespace ImproveGame
                 btn.bounds = new Rectangle(btn.bounds.X, btn.bounds.Y, num, num2);
                 btn.button = new ClickableComponent(btn.bounds, "OptionsButton_" + ButtonBlockLabelText);
             }
+        }
+
+        public static bool Prefix_saveWholeBackup()
+        {
+            //Console.WriteLine("fixbug Cancel call func saveWholeBackup()");
+            return false;
         }
     }
 }

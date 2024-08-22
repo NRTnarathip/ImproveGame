@@ -9,7 +9,7 @@ namespace ImproveGame;
 public sealed class ModEntry : Mod
 {
     public static ModEntry Instance { get; private set; }
-    public Harmony Harmony { get; private set; }
+    public Harmony harmony { get; private set; }
 
     public static bool EnableMultiThreadLog = false;
     public static void Log(string msg)
@@ -37,10 +37,19 @@ public sealed class ModEntry : Mod
     public override void Entry(IModHelper helper)
     {
         Instance = this;
-        Harmony = new Harmony("NRTnarathip.ImproveGame");
-        Harmony.PatchAll();
+        harmony = new Harmony("NRTnarathip.ImproveGame");
+        harmony.PatchAll();
         helper.Events.Content.AssetReady += handleOnModLangageLoaded;
-        DayTimeMoneyBoxThaiFormat.Init(Harmony);
+        DayTimeMoneyBoxThaiFormat.Init(harmony);
+        helper.Events.Specialized.LoadStageChanged += LoadedStateChanged;
+    }
+
+    private void LoadedStateChanged(object? sender, LoadStageChangedEventArgs e)
+    {
+        if (e.NewStage == StardewModdingAPI.Enums.LoadStage.Ready)
+        {
+            DisableQuickSave.TryInitialize(harmony);
+        }
     }
 
 
