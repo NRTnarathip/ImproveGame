@@ -7,6 +7,7 @@ using StardewValley.Menus;
 
 namespace ImproveGame
 {
+
     [HarmonyPatch]
     class SpriteTextPatch
     {
