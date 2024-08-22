@@ -16,12 +16,10 @@ namespace ImproveGame
         static void AfterShrinkFont(bool shrink)
         {
             var langMod = LocalizedContentManager.CurrentModLanguage;
-            //Console.WriteLine("SV: lang mod?: " + langMod);
             if (langMod == null)
                 return;
 
             SpriteText.fontPixelZoom = langMod.FontPixelZoom;
-            //Console.WriteLine("SV: set font pixel zoom: " + SpriteText.fontPixelZoom);
         }
     }
 
