@@ -6,5 +6,11 @@
   "UniqueID": "NRTnarathip.ImproveGame",
   "EntryDll": "ImproveGame.dll",
   "MinimumApiVersion": "3.20.7",
-  "UpdateKeys": [ ]
+  "UpdateKeys": [],
+  "Dependencies": [
+    {
+      "UniqueID": "spacechase0.SpaceCore",
+      "IsRequired": false
+    }
+  ]
 }

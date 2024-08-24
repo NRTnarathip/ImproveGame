@@ -40,8 +40,10 @@ public sealed class ModEntry : Mod
         harmony = new Harmony("NRTnarathip.ImproveGame");
         harmony.PatchAll();
         helper.Events.Content.AssetReady += handleOnModLangageLoaded;
-        DayTimeMoneyBoxThaiFormat.Init(harmony);
         helper.Events.Specialized.LoadStageChanged += LoadedStateChanged;
+        DayTimeMoneyBoxThaiFormat.Init(harmony);
+
+        SpaceCoreCrashFix.Init();
     }
 
     private void LoadedStateChanged(object? sender, LoadStageChangedEventArgs e)
