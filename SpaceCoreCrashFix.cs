@@ -67,10 +67,6 @@ namespace ImproveGame
                 harmony.Patch(method,
                     new(typeof(SpaceCoreCrashFix).GetMethod(nameof(Prefix_GetEnumXmlValue))));
             }
-
-            {
-
-            }
         }
 
         private static bool FindAndRemoveModNodes(XmlNode node, List<KeyValuePair<string, string>> modNodes, string currPath = "")

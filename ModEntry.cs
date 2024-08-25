@@ -33,10 +33,11 @@ public sealed partial class ModEntry : Mod
         helper.Events.Specialized.LoadStageChanged += LoadedStateChanged;
         DayTimeMoneyBoxThaiFormat.Init(harmony);
 
-        if (helper.ModRegistry.IsLoaded("spacechese0.SpaceCore"))
+        if (helper.ModRegistry.IsLoaded("spacechase0.SpaceCore"))
             SpaceCoreCrashFix.Init();
         PerformanceTester.Init();
     }
+
 
     private void LoadedStateChanged(object? sender, LoadStageChangedEventArgs e)
     {
@@ -53,31 +54,35 @@ public sealed partial class ModEntry : Mod
         //patch force use mod language if is found
         if (e.Name.ToString().Equals("Data/AdditionalLanguages"))
         {
-            Log("This mod ready to check mod language!", LangaugeModLogLevel);
-            //check if mod is not valid & restore lang with preference
-            //fource mod lang
+            Log("new mod language!");
+            TrySetLanguageMode();
+        }
+    }
+    void TrySetLanguageMode()
+    {
+        //check if mod is not valid & restore lang with preference
+        //fource mod lang
 
-            var savePreference = new StartupPreferences();
-            savePreference.loadPreferences(false, true);
+        var savePreference = new StartupPreferences();
+        savePreference.loadPreferences(false, true);
 
+        PrintLanguageInfo();
+
+        if (CheckCanApplyModLanguage())
+        {
+            SetLanguageToMod();
+            savePreference.savePreferences(false, true);
             PrintLanguageInfo();
+        }
 
-            if (CheckCanApplyModLanguage())
+        //fix restore language if Mod language is error
+        else
+        {
+            if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.mod)
             {
-                SetLanguageToMod();
+                SetLanguageToEnglish();
                 savePreference.savePreferences(false, true);
                 PrintLanguageInfo();
-            }
-
-            //fix restore language if Mod language is error
-            else
-            {
-                if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.mod)
-                {
-                    SetLanguageToEnglish();
-                    savePreference.savePreferences(false, true);
-                    PrintLanguageInfo();
-                }
             }
         }
     }
