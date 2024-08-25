@@ -20,9 +20,6 @@
 	  <Reference Include="MonoGame.Framework">
 	    <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\MonoGame.Framework.dll</HintPath>
 	  </Reference>
-	  <Reference Include="SpaceCore">
-	    <HintPath>..\..\..\..\Nox_share\Download\SpaceCore\SpaceCore.dll</HintPath>
-	  </Reference>
 	  <Reference Include="StardewModdingAPI">
 	    <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\StardewModdingAPI.dll</HintPath>
 	  </Reference>

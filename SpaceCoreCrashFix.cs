@@ -34,7 +34,7 @@ namespace ImproveGame
         {
             {
                 var harmonySpaceCore = new Harmony("spacechase0.SpaceCore");
-                var spaceCoreAsm = Assembly.GetAssembly(typeof(SpaceCore.AnimatedSpriteDrawExtrasPatch1));
+                var spaceCoreAsm = Assembly.Load("SpaceCore");
                 {
                     var method = spaceCoreAsm.GetType("SpaceCore.Patches.SaveGamePatcher")
                         .GetMethod("SerializeProxy", BindingFlags.Static | BindingFlags.NonPublic);
