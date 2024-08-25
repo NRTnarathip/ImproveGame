@@ -6,29 +6,19 @@ using StardewValley.GameData;
 
 namespace ImproveGame;
 
-public sealed class ModEntry : Mod
+public sealed partial class ModEntry : Mod
 {
     public static ModEntry Instance { get; private set; }
     public Harmony harmony { get; private set; }
 
-    public static bool EnableMultiThreadLog = false;
     public static void Log(string msg)
     {
-        if (EnableMultiThreadLog)
-            lock (Instance)
-                Instance.Monitor.Log(msg, LogLevel.Info);
-        else
-            Instance.Monitor.Log(msg, LogLevel.Info);
-
+        Instance.Monitor.Log(msg, LogLevel.Info);
     }
     public static void Log(object msg) => Log(msg.ToString());
     public static void Log(string msg, LogLevel level)
     {
-        if (EnableMultiThreadLog)
-            lock (Instance)
-                Instance.Monitor.Log(msg, level);
-        else
-            Instance.Monitor.Log(msg, level);
+        Instance.Monitor.Log(msg, level);
     }
 
     public static void Alert(string msg) => Log(msg, LogLevel.Alert);
@@ -43,7 +33,9 @@ public sealed class ModEntry : Mod
         helper.Events.Specialized.LoadStageChanged += LoadedStateChanged;
         DayTimeMoneyBoxThaiFormat.Init(harmony);
 
-        SpaceCoreCrashFix.Init();
+        if (helper.ModRegistry.IsLoaded("spacechese0.SpaceCore"))
+            SpaceCoreCrashFix.Init();
+        PerformanceTester.Init();
     }
 
     private void LoadedStateChanged(object? sender, LoadStageChangedEventArgs e)
@@ -70,7 +62,7 @@ public sealed class ModEntry : Mod
 
             PrintLanguageInfo();
 
-            if (VerifyCanApplyModLanguage())
+            if (CheckCanApplyModLanguage())
             {
                 SetLanguageToMod();
                 savePreference.savePreferences(false, true);
@@ -89,7 +81,7 @@ public sealed class ModEntry : Mod
             }
         }
     }
-    bool VerifyCanApplyModLanguage()
+    bool CheckCanApplyModLanguage()
     {
         List<ModLanguage> modLanguages = Game1.content.Load<List<ModLanguage>>("Data\\AdditionalLanguages");
         if (modLanguages.Count == 0)

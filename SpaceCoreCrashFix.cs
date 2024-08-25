@@ -67,6 +67,10 @@ namespace ImproveGame
                 harmony.Patch(method,
                     new(typeof(SpaceCoreCrashFix).GetMethod(nameof(Prefix_GetEnumXmlValue))));
             }
+
+            {
+
+            }
         }
 
         private static bool FindAndRemoveModNodes(XmlNode node, List<KeyValuePair<string, string>> modNodes, string currPath = "")
@@ -112,6 +116,8 @@ namespace ImproveGame
             // To fix serialize bug in mobile platform
             origWriter.Flush();
             string filename = serializer.GetType() == typeof(FarmerSerializer) ? FarmerFilename : Filename;
+            //Console.WriteLine("qwe; hook serilize proxy; filename; " + filename
+            //    + ", serializer type= " + serializer.GetType());
 
             //fix bug mobile
             //we should create folder Save Game before File.WriteAllText
