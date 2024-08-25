@@ -11,8 +11,6 @@ namespace ImproveGame
         static bool _initialized;
         public static void TryInitialize(Harmony harmony)
         {
-            return;
-
             if (_initialized)
                 return;
             _initialized = true;
