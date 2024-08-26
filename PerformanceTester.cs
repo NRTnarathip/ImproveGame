@@ -1,5 +1,8 @@
-﻿namespace ImproveGame;
+﻿using HarmonyLib;
 
+namespace ImproveGame;
+
+[HarmonyPatch]
 internal static class PerformanceTester
 {
     public static void Init()

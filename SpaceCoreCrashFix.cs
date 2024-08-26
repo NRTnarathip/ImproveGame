@@ -3,8 +3,8 @@ using Microsoft.Xml.Serialization.GeneratedAssembly;
 using Netcode;
 using Newtonsoft.Json;
 using StardewValley;
-using System.Diagnostics;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -14,22 +14,6 @@ namespace ImproveGame
     [HarmonyPatch]
     class SpaceCoreCrashFix
     {
-        static string MethodFullName(MethodInfo method)
-        {
-            return $"{method.DeclaringType}::{method}";
-        }
-        static string MethodFullName(MethodBase method)
-        {
-            return $"{method.DeclaringType}::{method}";
-        }
-
-        static void PrintStack()
-        {
-            foreach (var frame in new StackTrace().GetFrames())
-            {
-                Console.WriteLine("qwe frame: " + MethodFullName(frame.GetMethod()));
-            }
-        }
         public static void Init()
         {
             {
@@ -39,7 +23,7 @@ namespace ImproveGame
                     var method = spaceCoreAsm.GetType("SpaceCore.Patches.SaveGamePatcher")
                         .GetMethod("SerializeProxy", BindingFlags.Static | BindingFlags.NonPublic);
                     ModEntry.Instance.harmony.Patch(method,
-                        prefix: new(typeof(SpaceCoreCrashFix).GetMethod(nameof(Prefix_SerializeProxy))));
+                        prefix: new(typeof(SpaceCoreCrashFix).GetMethod(nameof(Prefix_Fixed_SerializeProxy))));
                 }
             }
 
@@ -66,6 +50,76 @@ namespace ImproveGame
                     null, [typeof(XmlTypeMapping), typeof(object)], null);
                 harmony.Patch(method,
                     new(typeof(SpaceCoreCrashFix).GetMethod(nameof(Prefix_GetEnumXmlValue))));
+            }
+            {
+                var type = AccessTools.TypeByName("System.Xml.Serialization.XmlReflectionImporter");
+                var method = type.GetMethod("GetReflectionMembers",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                harmony.Patch(method,
+                    postfix: new(typeof(SpaceCoreCrashFix), nameof(Postfix_Fixed_GetReflectionMembers)));
+
+            }
+
+            XmlPatcher.Init();
+        }
+
+        //src code https://github.com/ZaneYork/SMAPI
+        static IEnumerable<CodeInstruction> Transpiler_GetValueFromXmlString(ILGenerator gen, MethodBase original, IEnumerable<CodeInstruction> insns)
+        {
+            List<CodeInstruction> newInsns = new();
+            foreach (var insn in insns)
+            {
+                if (insn.opcode == OpCodes.Bne_Un_S)
+                {
+                    if (newInsns[newInsns.Count - 1].opcode == OpCodes.Ldc_I4_2)
+                    {
+                        var lastIns = newInsns[newInsns.Count - 2];
+                        if (lastIns.opcode == OpCodes.Callvirt && lastIns.operand is MethodInfo minfo && minfo.DeclaringType.FullName == "System.Xml.Serialization.TypeData" && minfo.Name == "get_SchemaType")
+                        {
+                            newInsns.Add(insn);
+                            Label continueLabel = gen.DefineLabel();
+                            Label retLabel = gen.DefineLabel();
+                            newInsns.Add(new CodeInstruction(OpCodes.Ldarg_1));
+                            newInsns.Add(new CodeInstruction(OpCodes.Brfalse_S, retLabel));
+                            newInsns.Add(new CodeInstruction(OpCodes.Ldarg_1));
+                            newInsns.Add(new CodeInstruction(OpCodes.Call, AccessTools.PropertyGetter(typeof(string), nameof(string.Length))));
+                            newInsns.Add(new CodeInstruction(OpCodes.Ldc_I4_0));
+                            newInsns.Add(new CodeInstruction(OpCodes.Cgt));
+                            newInsns.Add(new CodeInstruction(OpCodes.Brfalse_S, retLabel));
+                            newInsns.Add(new CodeInstruction(OpCodes.Br_S, continueLabel));
+
+                            newInsns.Add(new CodeInstruction(OpCodes.Ldnull).WithLabels(retLabel));
+                            newInsns.Add(new CodeInstruction(OpCodes.Ret));
+
+                            CodeInstruction label = new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel);
+                            newInsns.Add(label);
+                            continue;
+                        }
+                    }
+                }
+                newInsns.Add(insn);
+            }
+            return newInsns;
+        }
+
+
+        static void Postfix_Fixed_GetReflectionMembers(ref List<XmlReflectionMember> __result, Type type)
+        {
+            if (!type.FullName.StartsWith("StardewValley"))
+                return;
+            foreach (XmlReflectionMember member in __result)
+            {
+                if (member.MemberType.FullName.StartsWith("Netcode.NetEvent"))
+                {
+                    //Console.WriteLine(
+                    //    "qwe; fix Netcode.Netevent XmlIgnore=true"
+                    //    + $", data type: {type}"
+                    //    + ", member type; " + member.MemberType.Name
+                    //    + $", name= {member.MemberName}"
+                    //    + $", is XmlIgNore= {member.XmlAttributes.XmlIgnore}"
+                    //);
+                    member.XmlAttributes.XmlIgnore = true;
+                }
             }
         }
 
@@ -95,7 +149,7 @@ namespace ImproveGame
 
         static readonly string Filename = "spacecore-serialization.json";
         static readonly string FarmerFilename = "spacecore-serialization-farmer.json";
-        public static bool Prefix_SerializeProxy(XmlSerializer serializer, XmlWriter origWriter, object obj)
+        public static bool Prefix_Fixed_SerializeProxy(XmlSerializer serializer, XmlWriter origWriter, object obj)
         {
             using var ms = new MemoryStream();
             using var writer = XmlWriter.Create(ms, new XmlWriterSettings { CloseOutput = false });
@@ -135,6 +189,10 @@ namespace ImproveGame
         static Type TypeData_Type = AccessTools.TypeByName("System.Xml.Serialization.TypeData");
         static FieldInfo TypeData_type_Field = TypeData_Type.GetField("type",
             BindingFlags.Instance | BindingFlags.NonPublic);
+        static FieldInfo TypeData_elementName_FieldInfo = TypeData_Type.GetField("elementName",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        static FieldInfo TypeData_sType_FieldInfo = TypeData_Type.GetField("sType",
+            BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static void Prefix_GetEnumXmlValue(XmlTypeMapping typeMap, ref object ob)
         {
@@ -143,19 +201,14 @@ namespace ImproveGame
                 var typeData = XmlTypeMapping_type_Field.GetValue(typeMap);
                 var enumType = TypeData_type_Field.GetValue(typeData) as Type;
                 ob = Enum.Parse(enumType, enumValueString);
-                ModEntry.Log("Fix GetEnumXmlValue(typeMap, obj); type:" + enumType + ", value: " + ob);
+                //ModEntry.Log("Fix GetEnumXmlValue(typeMap, obj); type:" + enumType + ", value: " + ob);
                 //PrintStack();
             }
         }
 
         public static bool Prefix_NetEnum_Add(object __instance, ref object value)
         {
-            //Console.WriteLine("qwe; hook NetEnum.Add()");
-            //Console.WriteLine("qwe; value: " + value
-            //    + $"value type: {value.GetType()}");
-            //foreach (var f in new StackTrace().GetFrames())
-            //    Console.WriteLine("qwe; frame: " + f.GetMethod().Name);
-            ModEntry.Log("Fix NetEnum.Add(value) cast value to string; value: " + value);
+            //ModEntry.Log("Fix NetEnum.Add(value) cast value to string; value: " + value);
             value = value.ToString();
             return false;
         }
