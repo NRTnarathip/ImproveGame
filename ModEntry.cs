@@ -36,6 +36,8 @@ public sealed partial class ModEntry : Mod
         if (helper.ModRegistry.IsLoaded("spacechase0.SpaceCore"))
             SpaceCoreCrashFix.Init();
         PerformanceTester.Init();
+
+        FindBug.Init();
     }
 
 

@@ -1,8 +1,10 @@
 ﻿using HarmonyLib;
-using System.Xml.Serialization;
+using StardewModdingAPI.Events;
+using StardewValley;
 
 namespace ImproveGame;
 
+[HarmonyPatch]
 internal class FindBug : BasePatcher
 {
     public FindBug()
@@ -47,21 +49,111 @@ internal class FindBug : BasePatcher
             //    prefix: new(typeof(SpaceCoreCrashFix), nameof(Prefix_FromXmlString)));
 
         }
-
-
+        {
+            //var type = typeof(Character);
+            //PatchPrefix(
+            //    GetConstructor(type, ".ctor", ["AnimatedSprite", "Vector2", "int", "string"])
+            //    , nameof(Prefix_Character)
+            //);
+        }
+        //ModEntry.Instance.Helper.Events.GameLoop.OneSecondUpdateTicking += GameLoop_UpdateTicking;
     }
+
+    private void GameLoop_UpdateTicking(object? sender, OneSecondUpdateTickingEventArgs e)
+    {
+        foreach (var loc in Game1.locations)
+        {
+            if (loc.characters.Count == 0)
+                continue;
+
+            Console.WriteLine($"qwe location name: {loc.name}");
+            foreach (var npc in loc.characters)
+            {
+                Console.WriteLine("qwe character: " + npc.name);
+                if (npc.Sprite == null)
+                    Console.WriteLine("qwe sprite is null");
+                else
+                    Console.WriteLine($"qwe sprite width: {npc.Sprite.getWidth()}");
+            }
+        }
+    }
+
+    //[HarmonyPatch(typeof(Character))]
+    //[HarmonyPatch(MethodType.Constructor)]
+    //[HarmonyPatch(new Type[] { })] // Empty type array for parameterless constructor
+    //[HarmonyPrefix] // Prefix method to run before the constructor
+    //static void Prefix_CharacterCtor(Character __instance)
+    ////[HarmonyPatch([typeof(AnimatedSprite), typeof(Vector2), typeof(int), typeof(string)])]
+    //{
+    //    var name = __instance.name;
+    //    var sprite = __instance.sprite;
+    //    //Console.WriteLine($"qwe Character.ctor(), name: {name},, sprite. {sprite}");
+    //}
+
+    //[HarmonyPatch(typeof(Character))]
+    //[HarmonyPatch(MethodType.Constructor)]
+    //[HarmonyPatch([typeof(AnimatedSprite), typeof(Vector2), typeof(int), typeof(string)])] // Empty type array for parameterless constructor
+    //[HarmonyPrefix] // Prefix method to run before the constructor
+    //static void Prefix_Character(Character __instance, AnimatedSprite sprite, Vector2 position, int speed, string name)
+    //{
+    //    //Console.WriteLine($"qwe Character.ctor(2), name: {name}, sprite: {sprite}, pos: {position}");
+    //}
+
+    //[HarmonyPrefix]
+    //[HarmonyPatch(typeof(Character), "set_Name")]
+    //static void Prefix_SetName(Character __instance, ref string value)
+    //{
+    //    Console.WriteLine($"qwe setName: {value}, character: {__instance}");
+    //}
+    //[HarmonyPrefix]
+    //[HarmonyPatch(typeof(Character), "set_Sprite")]
+    //static void Prefix_SetName(Character __instance, ref AnimatedSprite value)
+    //{
+    //    Console.WriteLine($"qwe setSprite: {value}, character: {__instance}, name: {__instance.name}");
+    //}
+
+    //[HarmonyPrefix]
+    //[HarmonyPatch(typeof(GameLocation), "resetLocalState")]
+    //static void resetLocalState(object __instance)
+    //{
+    //    Console.WriteLine("\n Prefix GameLocation: " + __instance);
+    //    var npc = JojaMart.Morris;
+    //    Console.WriteLine($"npc: {npc?.name}, spriteNull?: {npc?.Sprite == null}, spriteWIdth: {npc?.Sprite?.SpriteWidth}");
+    //}
+    //[HarmonyPostfix]
+    //[HarmonyPatch(typeof(GameLocation), "resetLocalState")]
+    //static void resetLocalState_End(object __instance)
+    //{
+    //    var npc = JojaMart.Morris;
+    //    Console.WriteLine("\n Postfix GameLocation: " + __instance);
+    //    Console.WriteLine($"npc: {npc?.name}, spriteNull?: {npc?.Sprite == null}, spriteWIdth: {npc?.Sprite?.SpriteWidth}");
+    //}
+
+    //[HarmonyPrefix]
+    //[HarmonyPatch(typeof(Character), "GetSpriteWidthForPositioning")]
+    //static void GetSpriteWidthForPositioning(Character __instance)
+    //{
+    //    //Console.WriteLine($"\nqwe GetSpriteWidthForPositioning(), object: {__instance}");
+    //    var character = __instance;
+    //    if (character.Sprite == null)
+    //    {
+    //        Console.WriteLine($"npc:: name: {character.name}, spriteWidth: {character.Sprite?.SpriteWidth}");
+    //        Console.WriteLine("npc sprite is null");
+    //    }
+    //}
+
     public static void Init()
     {
         new FindBug();
     }
-    static void Prefix_Serialize(object __instance, object o, XmlSerializationWriter writer)
-    {
-        Console.WriteLine($"qwe Serialize(), object: {o}:type:{o.GetType()}, writer: {writer}");
-    }
-    static void Prefix_WriteRoot(object ob)
-    {
-        //Console.WriteLine($"qwe; WriteRoot(); object: {ob}");
-    }
+    //static void Prefix_Serialize(object __instance, object o, XmlSerializationWriter writer)
+    //{
+    //    Console.WriteLine($"qwe Serialize(), object: {o}:type:{o.GetType()}, writer: {writer}");
+    //}
+    //static void Prefix_WriteRoot(object ob)
+    //{
+    //    //Console.WriteLine($"qwe; WriteRoot(); object: {ob}");
+    //}
 
     //static object GetTypeData_ElementName(object typeData)
     //{
