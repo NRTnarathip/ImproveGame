@@ -9,11 +9,19 @@
   "UpdateKeys": [],
   "Dependencies": [
     {
+      "UniqueID": "NRTnarathip.VirtualKeyboard",
+      "IsRequired": false
+    },
+    {
       "UniqueID": "spacechase0.SpaceCore",
       "IsRequired": false
     },
     {
       "UniqueID": "Pathoschild.ContentPatcher",
+      "IsRequired": false
+    },
+    {
+      "UniqueID": "Rafseazz.RidgesideVillage",
       "IsRequired": false
     }
   ]

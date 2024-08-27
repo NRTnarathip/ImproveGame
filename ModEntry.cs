@@ -5,7 +5,6 @@ using StardewValley;
 using StardewValley.GameData;
 
 namespace ImproveGame;
-
 public sealed partial class ModEntry : Mod
 {
     public static ModEntry Instance { get; private set; }
@@ -27,18 +26,20 @@ public sealed partial class ModEntry : Mod
     public override void Entry(IModHelper helper)
     {
         Instance = this;
-        harmony = new Harmony("NRTnarathip.ImproveGame");
+        harmony = new Harmony(Helper.ModRegistry.ModID);
         harmony.PatchAll();
         helper.Events.Content.AssetReady += handleOnModLangageLoaded;
         helper.Events.Specialized.LoadStageChanged += LoadedStateChanged;
         DayTimeMoneyBoxThaiFormat.Init(harmony);
-
-        if (helper.ModRegistry.IsLoaded("spacechase0.SpaceCore"))
-            SpaceCoreCrashFix.Init();
         PerformanceTester.Init();
-
         FindBug.Init();
+        CommandMobile.Init();
+
+        //options patch mods
+        SpaceCoreCrashFix.Init();
+        SpaceCoreWalletUIFix.Init();
     }
+    public static bool IsLoaded(string modID) => Instance.Helper.ModRegistry.IsLoaded(modID);
 
 
     private void LoadedStateChanged(object? sender, LoadStageChangedEventArgs e)
