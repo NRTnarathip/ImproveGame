@@ -16,16 +16,14 @@ class SpaceCoreCrashFix
 {
     public static void Init()
     {
-        if (SpaceCoreAPI.IsNotLoad()) return;
-
         {
             var harmonySpaceCore = new Harmony("spacechase0.SpaceCore");
-            var spaceCoreAsm = Assembly.Load("SpaceCore");
+            var spaceCoreAsm = SpaceCoreAPI.MainAssembly;
             {
                 var method = spaceCoreAsm.GetType("SpaceCore.Patches.SaveGamePatcher")
                     .GetMethod("SerializeProxy", BindingFlags.Static | BindingFlags.NonPublic);
                 ModEntry.Instance.harmony.Patch(method,
-                    prefix: new(typeof(SpaceCoreCrashFix).GetMethod(nameof(Prefix_Fixed_SerializeProxy))));
+                    prefix: new(typeof(SpaceCoreCrashFix), nameof(Prefix_SerializeProxy)));
             }
         }
 
@@ -44,10 +42,9 @@ class SpaceCoreCrashFix
                     prefix: new(typeof(SpaceCoreCrashFix).GetMethod(nameof(Prefix_NetEnum_Add))));
             }
         }
-
+        var WriterInterpreter_Type = AccessTools.TypeByName("System.Xml.Serialization.XmlSerializationWriterInterpreter");
         {
-            var type = AccessTools.TypeByName("System.Xml.Serialization.XmlSerializationWriterInterpreter");
-            var method = type.GetMethod("GetEnumXmlValue",
+            var method = WriterInterpreter_Type.GetMethod("GetEnumXmlValue",
                 BindingFlags.Instance | BindingFlags.NonPublic,
                 null, [typeof(XmlTypeMapping), typeof(object)], null);
             harmony.Patch(method,
@@ -59,11 +56,25 @@ class SpaceCoreCrashFix
                 BindingFlags.Instance | BindingFlags.NonPublic);
             harmony.Patch(method,
                 postfix: new(typeof(SpaceCoreCrashFix), nameof(Postfix_Fixed_GetReflectionMembers)));
+        }
+        {
+
+            //harmony.Patch(
+            //    original: ImportClassMapping_MethodInfo,
+            //    postfix: new(typeof(SpaceCoreCrashFix), nameof(Postfix_ImportClassMapping))
+            //);
+
+
+
+
+            //test save serialize
 
         }
-
-        XmlPatcher.Init();
     }
+
+
+
+
 
     //src code https://github.com/ZaneYork/SMAPI
     static IEnumerable<CodeInstruction> Transpiler_GetValueFromXmlString(ILGenerator gen, MethodBase original, IEnumerable<CodeInstruction> insns)
@@ -144,7 +155,7 @@ class SpaceCoreCrashFix
 
     static readonly string Filename = "spacecore-serialization.json";
     static readonly string FarmerFilename = "spacecore-serialization-farmer.json";
-    public static bool Prefix_Fixed_SerializeProxy(XmlSerializer serializer, XmlWriter origWriter, object obj)
+    public static bool Prefix_SerializeProxy(XmlSerializer serializer, XmlWriter origWriter, object obj)
     {
         using var ms = new MemoryStream();
         using var writer = XmlWriter.Create(ms, new XmlWriterSettings { CloseOutput = false });
@@ -161,8 +172,6 @@ class SpaceCoreCrashFix
         // To fix serialize bug in mobile platform
         origWriter.Flush();
         string filename = serializer.GetType() == typeof(FarmerSerializer) ? FarmerFilename : Filename;
-        //Console.WriteLine("qwe; hook serilize proxy; filename; " + filename
-        //    + ", serializer type= " + serializer.GetType());
 
         //fix bug mobile
         //we should create folder Save Game before File.WriteAllText

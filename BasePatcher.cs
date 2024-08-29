@@ -6,8 +6,8 @@ namespace ImproveGame;
 
 public class BasePatcher
 {
-    static BindingFlags AllFlags = BindingFlags.Static | BindingFlags.Public
-        | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+    public static BindingFlags AllFlags = BindingFlags.Static | BindingFlags.Public
+         | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
 
     Type thisType;
     public BasePatcher()

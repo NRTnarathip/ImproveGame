@@ -5,13 +5,6 @@ using StardewValley.Menus;
 
 namespace ImproveGame;
 
-class SpaceCoreAPI
-{
-    public const string ModID = "spacechase0.SpaceCore";
-    public static bool IsLoaded() => ModEntry.Instance.Helper.ModRegistry.IsLoaded(ModID);
-    public static bool IsNotLoad() => !IsLoaded();
-}
-
 [HarmonyPatch]
 class SpaceCoreWalletUIFix : BasePatcher
 {

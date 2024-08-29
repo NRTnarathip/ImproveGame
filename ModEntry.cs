@@ -36,8 +36,14 @@ public sealed partial class ModEntry : Mod
         CommandMobile.Init();
 
         //options patch mods
-        SpaceCoreCrashFix.Init();
-        SpaceCoreWalletUIFix.Init();
+        if (SpaceCoreAPI.IsLoaded())
+        {
+            SpaceCoreAPI.Init();
+            SpaceCoreCrashFix.Init();
+            SpaceCoreWalletUIFix.Init();
+            SpaceCoreSerializerFix.Init();
+            XmlPatcher.Init();
+        }
     }
     public static bool IsLoaded(string modID) => Instance.Helper.ModRegistry.IsLoaded(modID);
 
