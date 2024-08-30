@@ -140,7 +140,7 @@ public class BasePatcher
     public static void Log(string msg, LogLevel logLevel = LogLevel.Trace)
     {
         msg = $"[Patcher Tool] {msg}";
-        ModEntry.Log(msg, logLevel);
+        Logger.Log(msg, logLevel);
     }
     public static void LogError(string msg) => Log(msg, LogLevel.Error);
     public static void LogWarn(string msg) => Log(msg, LogLevel.Warn);

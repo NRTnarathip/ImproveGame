@@ -4,8 +4,7 @@ namespace ImproveGame;
 
 internal class CustomPropertyInfo
 {
-    private PropertyInfo propInfo;
-
+    PropertyInfo propInfo;
     public Type DeclaringType { get; set; }
     public string Name { get; set; }
     public Type PropertyType { get; set; }

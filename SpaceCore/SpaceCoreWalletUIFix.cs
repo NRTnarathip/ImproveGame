@@ -11,8 +11,6 @@ class SpaceCoreWalletUIFix : BasePatcher
     static SpaceCoreWalletUIFix Instance;
     public static void Init()
     {
-        if (SpaceCoreAPI.IsNotLoad()) return;
-
         Instance = new SpaceCoreWalletUIFix();
     }
 
@@ -129,5 +127,7 @@ class SpaceCoreWalletUIFix : BasePatcher
         walletUpArrow.myID = WalletUpArrowRegionId;
         walletUpArrow.downNeighborID = specialItemComponents.First().myID;
         Instance.WriteField(skillPage, "walletUpArrow", walletUpArrow);
+
+        Console.WriteLine("done rewrite Wallet UI From SpaceCore Mod");
     }
 }

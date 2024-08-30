@@ -25,7 +25,7 @@ internal class CommandMobile
         var MessageBoxDescription = "in this it's cmd for SMAPI";
         Task.Run(async () =>
         {
-            var result = await KeyboardInput.Show(MessageBoxTitle, MessageBoxDescription, "cmd here..", false);
+            var result = await KeyboardInput.Show(MessageBoxTitle, MessageBoxDescription, "", false);
             if (result != null)
             {
                 var split = result.Split(' ', StringSplitOptions.RemoveEmptyEntries);

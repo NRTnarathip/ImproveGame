@@ -6,7 +6,8 @@ namespace ImproveGame.Xml;
 
 internal static class XmlReflectionImporterAPI
 {
-    static Type ThisType = AccessTools.TypeByName(XmlAPI.SerializationFullName + ".XmlReflectionImporter");
+    public static Type ThisType = AccessTools.TypeByName(XmlAPI.SerializationFullName + ".XmlReflectionImporter");
+    public static Type GetThisType() => AccessTools.TypeByName(XmlAPI.SerializationFullName + ".XmlReflectionImporter");
 
     public static MethodInfo Method(string name, Type[] paramTypes = null)
         => AccessTools.Method(ThisType, name, paramTypes);

@@ -56,7 +56,7 @@ static class SpaceCoreAPI
     public static void Unpatch(MethodBase method)
     {
         harmony.Unpatch(method, HarmonyPatchType.All);
-        Console.WriteLine("qwe SpaceCoreAPI unpatched method: " + method);
+        Logger.Log("unpatch SpaceCore at method: " + method);
     }
 }
 
