@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using ImproveGame.Rsv;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -26,7 +25,8 @@ public sealed partial class ModEntry : Mod
         PerformanceTester.Init();
         FindBug.Init();
         CommandMobile.Init();
-        //options patch mods
+
+        //patch fix other mods
         if (SpaceCoreAPI.IsLoaded())
         {
             helper.Events.Specialized.LoadStageChanged += (sender, e) =>
@@ -40,15 +40,8 @@ public sealed partial class ModEntry : Mod
             SpaceCoreWalletUIFix.Init();
             SpaceCoreSerializerCustom.Init();
             XmlPatcher.Init();
-
-            //test code
-            TestCustomProperty.Apply();
         }
-        if (RsvWalletItemFix.IsLoaded)
-            RsvWalletItemFix.Init();
     }
-
-
 }
 class ModLanguageChanger
 {

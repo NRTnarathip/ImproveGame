@@ -4,11 +4,11 @@ using StardewValley;
 
 namespace ImproveGame;
 
-
+[HarmonyPatch]
 internal static class TestCustomProperty
 {
 
-    static NetBool hasCake_Me = new(true);
+    static NetBool hasCake_Me = new();
     public static NetBool Getter_hasCake(this Farmer farmer)
     {
         Console.WriteLine("Getter_hasCake(); value: " + hasCake_Me);
@@ -17,14 +17,14 @@ internal static class TestCustomProperty
     public static void Setter_hasCake(this Farmer farmer, NetBool value)
     {
         Console.WriteLine("Setter_hasCake(); value: " + value.Value);
-        farmer.Getter_hasCake().Value = value.Value;
+        hasCake_Me = value;
     }
     public static void Apply()
     {
         //Regiser Class Type
 
         const string hasCake_MemberName = "hasCake";
-        SerializerCustomPropertyAPI.RegisterCustomProperty(
+        SpaceCoreCustomPropertyAPI.RegisterCustomProperty(
             typeof(Farmer),
             hasCake_MemberName,
             hasCake_Me.GetType(),

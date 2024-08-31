@@ -15,8 +15,6 @@ internal static class Logger
     public static void Log(string msg)
     {
         monitor.Log(msg, LogLevel.Info);
-        //debug only
-        Console.WriteLine(msg);
     }
     public static void Log(object msg) => Log(msg.ToString());
     public static void Log(string msg, LogLevel level) => monitor.Log(msg, level);

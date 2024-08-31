@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace ImproveGame;
 
-internal static class SerializerCustomPropertyAPI
+internal static class SpaceCoreCustomPropertyAPI
 {
     public static Dictionary<Type, Dictionary<string, CustomPropertyInfo>> CustomPropertyMap = new();
     public static void Init()
@@ -32,7 +32,7 @@ internal static class SerializerCustomPropertyAPI
         var harmony = ModEntry.Instance.harmony;
         harmony.Patch(
             original: AccessTools.Method(SpaceCoreAPI.TypeByName("SpaceCore.Api"), "RegisterCustomProperty"),
-            prefix: new(AccessTools.Method(typeof(SerializerCustomPropertyAPI), nameof(Prefix_RegisterCustomProp)))
+            prefix: new(AccessTools.Method(typeof(SpaceCoreCustomPropertyAPI), nameof(Prefix_RegisterCustomProp)))
         );
     }
     static void Prefix_RegisterCustomProp(Type declaringType, string name,

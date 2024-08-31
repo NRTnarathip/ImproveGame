@@ -14,7 +14,7 @@ internal static class RsvWalletItemFix
         var harmony = ModEntry.Instance.harmony;
 
         //replace new
-        SerializerCustomPropertyAPI.RegisterCustomProperty(
+        SpaceCoreCustomPropertyAPI.RegisterCustomProperty(
             declaringType: typeof(Farmer),
             name: hasRiveraSecret_FieldName,
             propertyType: typeof(NetBool),

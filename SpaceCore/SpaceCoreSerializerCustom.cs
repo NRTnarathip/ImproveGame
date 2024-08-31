@@ -1,12 +1,14 @@
 ﻿using HarmonyLib;
 using ImproveGame.Xml;
 using ImproveGame.XmlAPI;
+using Netcode;
 using StardewValley;
 using StardewValley.Characters;
 using StardewValley.Monsters;
 using StardewValley.Objects;
 using StardewValley.Quests;
 using StardewValley.TerrainFeatures;
+using System.Diagnostics;
 using System.Reflection;
 using System.Xml.Serialization;
 
@@ -75,22 +77,21 @@ internal static class SpaceCoreSerializerCustom
     public static Type ThisType = typeof(SpaceCoreSerializerCustom);
     public static void Init()
     {
-        SerializerCustomPropertyAPI.Init();
-        ApplyPatcher();
+        //Disable custom proerties on Space Core
+        UnpatchSpaceCoreCustomProperties();
 
-
-        //ready
-        var mod = ModEntry.Instance;
-        mod.Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
+        //Init my sustom properties
+        //SpaceCoreCustomPropertyAPI.Init();
+        //ApplyPatcher();
+        //notify custom save
+        //var mod = ModEntry.Instance;
+        //mod.Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
     }
-    static void ApplyPatcher()
+    static void UnpatchSpaceCoreCustomProperties()
     {
-        var harmony = ModEntry.Instance.harmony;
         Type importer = AccessTools.TypeByName("System.Xml.Serialization.XmlReflectionImporter");
         Type TypeData_Type = AccessTools.TypeByName("System.Xml.Serialization.TypeData");
-        var WriterInterpreter_Type = AccessTools.TypeByName("System.Xml.Serialization.XmlSerializationWriterInterpreter");
         var XmlTypeMapMember_Type = AccessTools.TypeByName("System.Xml.Serialization.XmlTypeMapMember");
-
 
         var ImportClassMapping_Method = AccessTools.Method(importer, "ImportClassMapping",
                 [TypeData_Type, typeof(XmlRootAttribute), typeof(string), typeof(bool)]);
@@ -103,6 +104,20 @@ internal static class SpaceCoreSerializerCustom
         var XmlTypeMapMember_SetValue_Method = AccessTools.Method(
             XmlTypeMapMember_Type, "SetValue", [typeof(object), typeof(object)]);
         SpaceCoreAPI.Unpatch(XmlTypeMapMember_SetValue_Method);
+    }
+    static void ApplyPatcher()
+    {
+        var harmony = ModEntry.Instance.harmony;
+        Type importer = AccessTools.TypeByName("System.Xml.Serialization.XmlReflectionImporter");
+        Type TypeData_Type = AccessTools.TypeByName("System.Xml.Serialization.TypeData");
+        var WriterInterpreter_Type = AccessTools.TypeByName("System.Xml.Serialization.XmlSerializationWriterInterpreter");
+        var XmlTypeMapMember_Type = AccessTools.TypeByName("System.Xml.Serialization.XmlTypeMapMember");
+        var XmlTypeMapMember_GetValue_Method = AccessTools.Method(
+                   XmlTypeMapMember_Type, "GetValue", [typeof(object)]);
+        var XmlTypeMapMember_SetValue_Method = AccessTools.Method(
+          XmlTypeMapMember_Type, "SetValue", [typeof(object), typeof(object)]);
+        var ImportClassMapping_Method = AccessTools.Method(importer, "ImportClassMapping",
+                       [TypeData_Type, typeof(XmlRootAttribute), typeof(string), typeof(bool)]);
 
         harmony.Patch(
             original: XmlTypeMapMember_GetValue_Method,
@@ -115,11 +130,6 @@ internal static class SpaceCoreSerializerCustom
         harmony.Patch(
             original: ImportClassMapping_Method,
             postfix: new(typeof(SpaceCoreSerializerCustom), nameof(Postfix_ImportClassMapping))
-        );
-
-        harmony.Patch(
-            original: AccessTools.Method(XmlTypeMapMember_Type, "InitMember"),
-            prefix: new(AccessTools.Method(ThisType, nameof(Prefix_InitMember)))
         );
 
         var ReaderInterpreterType = AccessTools.TypeByName("System.Xml.Serialization.XmlSerializationReaderInterpreter");
@@ -156,7 +166,20 @@ internal static class SpaceCoreSerializerCustom
             Console.WriteLine("");
         }
     }
+    static bool ShouldLog(string memName, object obj = null)
+    {
+        if (memName == "hasRiveraSecret" || memName == "hasRustyKey"
+               || memName == "hasCake" || memName == "isMale")
+            return true;
 
+        if (obj != null)
+        {
+            var objType = obj.GetType();
+            if (objType == typeof(NetBool))
+                return true;
+        }
+        return false;
+    }
     static void GameLoop_GameLaunched(object? sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
     {
         //Recreate XmlSerializer with inject custom fields
@@ -170,72 +193,61 @@ internal static class SpaceCoreSerializerCustom
 
     static MethodInfo GetMethodPatch(string name) => AccessTools.Method(ThisType, name);
     static XmlSerializer CreateSerializerWithExtraType(Type baseType, Type[] extraType)
-    {
-        //Console.WriteLine("try create serializer for baseType: " + baseType
-        //    + ", extraTypesCount: " + extraType.Length);
-        var serializer = new XmlSerializer(baseType, extraType);
-        //Console.WriteLine("done create serializer for baseType: " + baseType);
-        return serializer;
-    }
+        => new XmlSerializer(baseType, extraType);
     static void Prefix_SetListMembersDefaults(object map, object ob, bool isValueList)
     {
-        return;
         var listMembers = ClassMapAPI.GetListMembers(map);
         if (listMembers != null)
         {
-            Console.WriteLine("SetListMembersDefaults(), " + ob + ", listMembers: " + listMembers);
-            //foreach (var member in listMembers)
-            //{
-            //    Console.WriteLine("found member: " + member
-            //        + ", memName: " + XmlTypeMapMemberAPI.GetName(member));
-            //}
+            Console.WriteLine("SetListMembersDefaults(), object:" + ob + ", listMembersCount: " + listMembers.Count);
+            foreach (var member in listMembers)
+            {
+                Console.WriteLine("found member: " + member
+                    + ", memName: " + XmlTypeMapMemberAPI.GetName(member));
+            }
         }
         else
         {
-            Console.WriteLine("SetListMembersDefaults(), " + ob + ", without list members");
+            Console.WriteLine("SetListMembersDefaults(), object: " + ob);
 
         }
     }
     static void PrefixGetMemberValue(object member, object ob, bool isValueList)
     {
-        return;
         var name = XmlTypeMapMemberAPI.GetName(member);
-        if (name.StartsWith("has"))
+        if (ShouldLog(name))
             Console.WriteLine("ReaderInterpreter.GetMemberValue(), fieldName: " + name + ", isValueList: " + isValueList);
     }
-
     static void PrefixSetMemberValue(object member, object ob, object value, bool isValueList)
     {
-        return;
-
         var name = XmlTypeMapMemberAPI.GetName(member);
-        if (name.StartsWith("has"))
+        if (ShouldLog(name))
         {
             Console.WriteLine("ReaderInterpreter.SetMemberValue(), value: " + value
                 + ", memName: " + name + ", isValueList: " + isValueList);
         }
     }
-    static bool Prefix_InitMember(object __instance, Type type)
+    public static void PrintStace()
     {
-        if (!SerializerCustomPropertyAPI.CustomPropertyMap.TryGetValue(type, out var props))
-            return true;
 
-        if (props.TryGetValue(XmlTypeMapMemberAPI.GetName(__instance), out var prop))
+        int i = 0;
+        foreach (var f in new StackTrace().GetFrames())
         {
-            Console.WriteLine("init member: " + prop.Name);
-            XmlTypeMapMemberAPI._member_FieldInfo
-                .SetValue(__instance, prop.GetFakePropertyInfo());
-            return false;
+            if (i >= 1)
+            {
+                var m = f.GetMethod();
+                Console.WriteLine($"frame: {m.DeclaringType.Name}::{m}");
+            }
+            i++;
+            if (i >= 12)
+                break;
         }
-
-        return true;
     }
-
     static void Postfix_ImportClassMapping(ref XmlTypeMapping __result,
        object typeData, XmlRootAttribute root, string defaultNamespace, bool isBaseType = false)
     {
         var type = (Type)AccessTools.Field(typeData.GetType(), "type").GetValue(typeData);
-        if (!SerializerCustomPropertyAPI.CustomPropertyMap.ContainsKey(type))
+        if (!SpaceCoreCustomPropertyAPI.CustomPropertyMap.ContainsKey(type))
             return;
 
         //Console.WriteLine("import class mapping for type: " + type);
@@ -245,7 +257,7 @@ internal static class SpaceCoreSerializerCustom
         object mapObject = AccessTools.Field(typeof(XmlTypeMapping), "map").GetValue(__result);
         var map_AddMember_Method = AccessTools.Method(mapObject.GetType(), "AddMember");
         var reflectionImporter = new XmlReflectionImporter();
-        foreach (var propKvp in SerializerCustomPropertyAPI.CustomPropertyMap[type])
+        foreach (var propKvp in SpaceCoreCustomPropertyAPI.CustomPropertyMap[type])
         {
             var prop = propKvp.Value;
             //Console.WriteLine("try add custom prop: " + prop.Name + ", type: " + prop.PropertyType);
@@ -261,13 +273,13 @@ internal static class SpaceCoreSerializerCustom
                     var mapMember = reflectionImporter.CreateMapMember(prop.DeclaringType, rmember, "");
                     XmlTypeMapMemberAPI._member_FieldInfo.SetValue(mapMember, prop.GetFakePropertyInfo());
                     ClassMapAPI.AddMember(mapObject, mapMember);
+                    Console.WriteLine("addded custom prop: " + prop.Name + ", in class: " + type);
                 }
                 catch (Exception ex)
                 {
                     //just skip error, because you already this member
                     //Console.WriteLine("fail try to classMap.AddMember(): " + ex);
                 }
-                Console.WriteLine("addded custom prop: " + prop.Name + ", in class: " + type);
             }
             catch (Exception ex)
             {
@@ -278,30 +290,14 @@ internal static class SpaceCoreSerializerCustom
     static bool Prefix_TypeMapMember_SetValue(object __instance, object ob, object value)
     {
         var memName = XmlTypeMapMemberAPI.GetName(__instance);
-        if (memName == "hasRiveraSecret" || memName == "hasRustyKey" || memName == "hasCake")
+        if (ShouldLog(memName, ob))
         {
-            Console.WriteLine("TypeMapMember.SetValue() value: " + value
-                + ", objType: " + ob.GetType() + ", memName: " + memName);
+            Console.WriteLine("TypeMapMember.SetValue() memNam: " + memName);
             XmlTypeMapMemberAPI.PrintMemberInfo(__instance);
-            //int i = 0;
-            //foreach (var f in new StackTrace().GetFrames())
-            //{
-            //    Console.WriteLine("frame: " + f.GetMethod());
-            //    i++;
-            //    if (i >= 5)
-            //        break;
-            //}
+            PrintStace();
         }
-        if (!SerializerCustomPropertyAPI.CustomPropertyMap.TryGetValue(ob.GetType(), out var props))
+        if (!SpaceCoreCustomPropertyAPI.CustomPropertyMap.TryGetValue(ob.GetType(), out var props))
             return true;
-
-        {
-            //Console.WriteLine("call stack trace");
-            //foreach (var f in new StackTrace().GetFrames())
-            //{
-            //    Console.WriteLine("frame: " + f.GetMethod().FullName());
-            //}
-        }
         if (props.TryGetValue(memName, out var prop))
         {
             prop.Setter.Invoke(null, [ob, value]);
@@ -313,15 +309,15 @@ internal static class SpaceCoreSerializerCustom
     static bool Prefix_TypeMapMember_GetValue(object __instance, object ob, ref object __result)
     {
         var memName = XmlTypeMapMemberAPI.GetName(__instance);
-        if (memName == "hasRiveraSecret" || memName == "hasRustyKey" || memName == "hasCake")
+        if (ShouldLog(memName))
         {
-            var member = XmlTypeMapMemberAPI.GetMemberInfo(__instance);
-            Console.WriteLine("TypeMapMember.GetValue(): memName: " + memName
-                + ", member is PropInfo: " + member is PropertyInfo);
+            Console.WriteLine("TypeMapMember.GetValue():");
+            XmlTypeMapMemberAPI.PrintMemberInfo(__instance);
+            PrintStace();
         }
 
 
-        if (!SerializerCustomPropertyAPI.CustomPropertyMap.TryGetValue(ob.GetType(), out var props))
+        if (!SpaceCoreCustomPropertyAPI.CustomPropertyMap.TryGetValue(ob.GetType(), out var props))
             return true;
 
         if (props.TryGetValue(memName, out var prop))
