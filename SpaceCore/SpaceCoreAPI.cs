@@ -12,8 +12,6 @@ static class SpaceCoreAPI
         harmony = new(ModID);
 
         CustomPropertyInfoAPI.Init();
-
-
     }
 
     public const string ModID = "spacechase0.SpaceCore";
@@ -56,7 +54,14 @@ static class SpaceCoreAPI
     public static void Unpatch(MethodBase method)
     {
         harmony.Unpatch(method, HarmonyPatchType.All);
-        Logger.Log("unpatch SpaceCore at method: " + method);
+        var logText = "unpatch SpaceCore at method: " + method;
+        Logger.Log(logText);
+        Console.WriteLine(logText);
+    }
+    public static void Unpatch(MethodBase[] methods)
+    {
+        foreach (var method in methods)
+            Unpatch(method);
     }
 }
 

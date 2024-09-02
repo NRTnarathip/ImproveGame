@@ -1,11 +1,11 @@
 {
   "Name": "Improve Game",
   "Author": "NRTnarathip",
-  "Version": "0.5.0",
+  "Version": "0.6.0",
   "Description": "Improve & Mod Language",
   "UniqueID": "NRTnarathip.ImproveGame",
   "EntryDll": "ImproveGame.dll",
-  "MinimumApiVersion": "3.20.7",
+  "MinimumApiVersion": "3.23.0",
   "UpdateKeys": [],
   "Dependencies": [
     {

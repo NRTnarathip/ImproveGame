@@ -14,7 +14,7 @@ using System.Xml.Serialization;
 
 namespace ImproveGame;
 
-internal static class SpaceCoreSerializerCustom
+internal static class SpaceCoreSerializerCustomFix
 {
     static readonly Type[] VanillaMainTypes = {
             typeof(Tool),
@@ -74,7 +74,7 @@ internal static class SpaceCoreSerializerCustom
             typeof(JunimoHarvester),
             typeof(TerrainFeature)
         };
-    public static Type ThisType = typeof(SpaceCoreSerializerCustom);
+    public static Type ThisType = typeof(SpaceCoreSerializerCustomFix);
     public static void Init()
     {
         //Disable custom proerties on Space Core
@@ -121,15 +121,15 @@ internal static class SpaceCoreSerializerCustom
 
         harmony.Patch(
             original: XmlTypeMapMember_GetValue_Method,
-            prefix: new(typeof(SpaceCoreSerializerCustom), nameof(Prefix_TypeMapMember_GetValue))
+            prefix: new(typeof(SpaceCoreSerializerCustomFix), nameof(Prefix_TypeMapMember_GetValue))
         );
         harmony.Patch(
             original: XmlTypeMapMember_SetValue_Method,
-            prefix: new(typeof(SpaceCoreSerializerCustom), nameof(Prefix_TypeMapMember_SetValue))
+            prefix: new(typeof(SpaceCoreSerializerCustomFix), nameof(Prefix_TypeMapMember_SetValue))
         );
         harmony.Patch(
             original: ImportClassMapping_Method,
-            postfix: new(typeof(SpaceCoreSerializerCustom), nameof(Postfix_ImportClassMapping))
+            postfix: new(typeof(SpaceCoreSerializerCustomFix), nameof(Postfix_ImportClassMapping))
         );
 
         var ReaderInterpreterType = AccessTools.TypeByName("System.Xml.Serialization.XmlSerializationReaderInterpreter");

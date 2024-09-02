@@ -3,13 +3,13 @@ using System.Globalization;
 using System.Reflection;
 
 namespace ImproveGame;
-internal class XmlPatcher : BasePatcher
+internal class XmlPatcherFix : BasePatcher
 {
     public static void Init()
     {
-        new XmlPatcher();
+        new XmlPatcherFix();
     }
-    public XmlPatcher()
+    public XmlPatcherFix()
     {
         var harmony = ModEntry.Instance.harmony;
         harmony.Patch(
