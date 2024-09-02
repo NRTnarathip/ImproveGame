@@ -78,14 +78,18 @@ internal static class SpaceCoreSerializerCustomFix
     public static void Init()
     {
         //Disable custom proerties on Space Core
+        //Work In Progress, should disable it
+        const bool IsDisableCustomProperties = true;
         UnpatchSpaceCoreCustomProperties();
-
-        //Init my sustom properties
-        //SpaceCoreCustomPropertyAPI.Init();
-        //ApplyPatcher();
-        //notify custom save
-        //var mod = ModEntry.Instance;
-        //mod.Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
+        if (!IsDisableCustomProperties)
+        {
+            //Init my sustom properties
+            SpaceCoreCustomPropertyAPI.Init();
+            ApplyPatcher();
+            //notify custom save
+            var mod = ModEntry.Instance;
+            mod.Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
+        }
     }
     static void UnpatchSpaceCoreCustomProperties()
     {

@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace ImproveGame;
 
-class DisableQuickSave
+static class DisableQuickSave
 {
     static bool _initialized;
     public static void TryInit(Harmony harmony)
