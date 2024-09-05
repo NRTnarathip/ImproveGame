@@ -24,7 +24,6 @@ public sealed partial class ModEntry : Mod
         DayTimeMoneyBoxThaiFormat.Init(harmony);
         PerformanceTester.Init();
         FindBug.Init();
-        CommandMobile.Init();
 
         //patch fix other mods
         if (SpaceCoreAPI.IsLoaded())
