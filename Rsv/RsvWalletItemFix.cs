@@ -24,14 +24,12 @@ internal static class RsvWalletItemFix
         WalletItem_Type = AccessTools.TypeByName("RidgesideVillage.WalletItem");
         Rsv_get_hasRiveraSecret_Method = AccessTools.Method(WalletItem_Type, "get_hasRiveraSecret");
         Rsv_set_hasRiveraSecret_Method = AccessTools.Method(WalletItem_Type, "set_hasRiveraSecret");
-        Console.WriteLine("wallet item type: " + WalletItem_Type);
     }
     const string hasRiveraSecret_FieldName = "hasRiveraSecret";
     public static MethodInfo Rsv_get_hasRiveraSecret_Method;
     public static MethodInfo Rsv_set_hasRiveraSecret_Method;
     public static void Setter_hasRiveraSecret(Farmer farmer, object newValue)
     {
-        Console.WriteLine("Setter_hasRiveraSecret: " + newValue);
         try
         {
             Rsv_set_hasRiveraSecret_Method.Invoke(null, [farmer.team, newValue]);

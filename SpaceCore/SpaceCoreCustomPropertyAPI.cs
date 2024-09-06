@@ -10,7 +10,6 @@ internal static class SpaceCoreCustomPropertyAPI
     public static void Init()
     {
         var customProps = (IDictionary)SpaceCoreAPI.ReadField_CustomProperties();
-        Console.WriteLine("found spaceCore custom props: " + customProps.Count);
         foreach (DictionaryEntry propKvp in customProps)
         {
             var delcaringType = propKvp.Key as Type;
@@ -45,7 +44,6 @@ internal static class SpaceCoreCustomPropertyAPI
         if (CustomPropertyMap.ContainsKey(type))
         {
             CustomPropertyMap.Remove(type);
-            Console.WriteLine("remove all CustomProp for class type: " + type);
         }
     }
     public static void RegisterCustomProperty(Type declaringType, string name, Type propertyType, MethodInfo getter, MethodInfo setter)
