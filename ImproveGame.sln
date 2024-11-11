@@ -8,16 +8,25 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM64 = Debug|ARM64
 		Mobile|Any CPU = Mobile|Any CPU
+		Mobile|ARM64 = Mobile|ARM64
 		Release|Any CPU = Release|Any CPU
+		Release|ARM64 = Release|ARM64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Debug|ARM64.Build.0 = Debug|ARM64
 		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Mobile|Any CPU.ActiveCfg = Mobile|Any CPU
 		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Mobile|Any CPU.Build.0 = Mobile|Any CPU
+		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Mobile|ARM64.ActiveCfg = Mobile|Any CPU
+		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Mobile|ARM64.Build.0 = Mobile|Any CPU
 		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Release|ARM64.ActiveCfg = Release|ARM64
+		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Release|ARM64.Build.0 = Release|ARM64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
