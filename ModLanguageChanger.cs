@@ -110,11 +110,11 @@ public sealed class ModLanguageChanger
         if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.mod)
         {
             Logger.Log($"Done set mod languageID: {targetModLanguage.Id}");
+
         }
         else
         {
             Logger.Log($"Error try to mod languageID: {targetModLanguage} ");
         }
     }
-
 }

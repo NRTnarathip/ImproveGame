@@ -2,30 +2,20 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
-using StardewValley.BellsAndWhistles;
 using StardewValley.Menus;
 
 namespace ImproveGame;
 
-[HarmonyPatch]
-class SpriteTextPatch
-{
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(SpriteText), "shrinkFont")]
-    static void AfterShrinkFont(bool shrink)
-    {
-        var langMod = LocalizedContentManager.CurrentModLanguage;
-        if (langMod == null)
-            return;
-
-        SpriteText.fontPixelZoom = langMod.FontPixelZoom;
-    }
-}
-
 public static class DayTimeMoneyBoxThaiFormat
 {
-    public static void Init(Harmony harmony)
+    public static bool IsApplyPatch { get; private set; } = false;
+    public static void Apply(Harmony harmony)
     {
+        if (IsApplyPatch)
+            return;
+
+        Console.WriteLine("start apply DayTimeMoneyBoxThaiFormat");
+        IsApplyPatch = true;
         {
             var DayTimeMoneyBoxDrawMethod = typeof(DayTimeMoneyBox).GetMethod("draw", [typeof(SpriteBatch)]);
             harmony.Patch(
@@ -62,11 +52,8 @@ public static class DayTimeMoneyBoxThaiFormat
         //line:297: Utility.drawTextWithShadow(b, dateText,
         if (CallStack_drawTextWithShadow_Count == 2)
         {
-            if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.mod)
-            {
-                text = LocalizedContentManager.FormatTimeString(Game1.timeOfDay,
-                    LocalizedContentManager.CurrentModLanguage.TimeFormat).ToString();
-            }
+            text = LocalizedContentManager.FormatTimeString(Game1.timeOfDay,
+                LocalizedContentManager.CurrentModLanguage.TimeFormat).ToString();
         }
     }
 
