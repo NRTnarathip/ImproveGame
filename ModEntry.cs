@@ -19,6 +19,5 @@ public sealed partial class ModEntry : Mod
         harmony = new Harmony(Helper.ModRegistry.ModID);
         harmony.PatchAll();
         modLanguageCore = new(this);
-        DayTimeMoneyBoxThaiFormat.Init(harmony);
     }
 }
