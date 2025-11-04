@@ -1,16 +1,24 @@
 {
+  /*
+   | This file is automatically updated by ModManifestBuilder
+   | when the project is compiled.
+   | 
+   | Changes made to this file may be overwritten.
+   | 
+   */
+  "$schema": "https://smapi.io/schemas/manifest.json",
+  "UniqueID": "NRTnarathip.ImproveGame",
   "Name": "Improve Game",
   "Author": "NRTnarathip",
-  "Version": "2.0.1",
-  "Description": "Improve & Mod Language",
-  "UniqueID": "NRTnarathip.ImproveGame",
-  "EntryDll": "ImproveGame.dll",
+  "Version": "2.0.1-beta.2",
+  "Description": "Support The Mod Language",
   "MinimumApiVersion": "4.1.7",
-  "UpdateKeys": [],
+  "EntryDll": "ImproveGame.dll",
   "Dependencies": [
     {
       "UniqueID": "NRTnarathip.VirtualKeyboard",
       "IsRequired": false
-    },
-  ]
+    }
+  ],
+  "UpdateKeys": []
 }

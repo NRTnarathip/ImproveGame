@@ -14,7 +14,6 @@ public static class DayTimeMoneyBoxThaiFormat
         if (IsApplyPatch)
             return;
 
-        Console.WriteLine("start apply DayTimeMoneyBoxThaiFormat");
         IsApplyPatch = true;
         {
             var DayTimeMoneyBoxDrawMethod = typeof(DayTimeMoneyBox).GetMethod("draw", [typeof(SpriteBatch)]);

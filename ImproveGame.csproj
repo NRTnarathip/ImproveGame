@@ -1,44 +1,30 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
 		<Platforms>ARM64</Platforms>
+		<EnableHarmony>true</EnableHarmony>
+
+		<!-- Manifest Config -->
+		<UniqueId>NRTnarathip.ImproveGame</UniqueId>
+		<Name>Improve Game</Name>
+		<Authors>NRTnarathip</Authors>
+		<Description>Support The Mod Language</Description>
+		<Version>2.0.1-beta.2</Version>
+		<MinimumApiVersion>4.1.7</MinimumApiVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Lib.Harmony" Version="2.3.3" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="System.Xml.ReaderWriter" Version="4.3.1" />
+		<!-- Mod Dependencies -->
+		<SMAPIDependency Include="NRTnarathip.VirtualKeyboard" Required="false" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="0Harmony">
-			<HintPath>..\..\SMAPI Android\SMAPI-3.18.6\SMAPI\bin\Release\0Harmony.dll</HintPath>
-		</Reference>
-		<Reference Include="MonoGame.Framework">
-		  <HintPath>..\..\Apks Latest File\assemblies\out\MonoGame.Framework.dll</HintPath>
-		</Reference>
-		<Reference Include="StardewModdingAPI">
-		  <HintPath>..\..\..\SMAPI-Android-1.6\src\SMAPI\bin\ARM64\Android Release\StardewModdingAPI.dll</HintPath>
-		</Reference>
-		<Reference Include="StardewValley">
-		  <HintPath>..\..\Apks Latest File\assemblies\out\StardewValley.dll</HintPath>
-		</Reference>
-		<Reference Include="StardewValley.GameData">
-		  <HintPath>..\..\Apks Latest File\assemblies\out\StardewValley.GameData.dll</HintPath>
-		</Reference>
-		<Reference Include="xTile">
-		  <HintPath>..\..\Apks Latest File\assemblies\out\xTile.dll</HintPath>
-		</Reference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="manifest.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
+		<PackageReference Include="Leclair.Stardew.ModManifestBuilder" Version="2.4.1" />
+		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

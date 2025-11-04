@@ -4,6 +4,7 @@ using StardewValley.GameData;
 using StardewValley;
 
 namespace ImproveGame;
+
 public sealed partial class ModEntry : Mod
 {
     public static ModEntry Instance { get; private set; }
@@ -23,6 +24,16 @@ public sealed partial class ModEntry : Mod
         modLanguageCore = new(this);
 
         Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
+        Helper.Events.Content.AssetReady += Content_AssetReady;
+    }
+
+    void Content_AssetReady(object? sender, StardewModdingAPI.Events.AssetReadyEventArgs e)
+    {
+        // auto detect mod language 
+        if (e.Name.Name.Equals("Data/AdditionalLanguages"))
+        {
+            modLanguageCore.ApplyModLanguage();
+        }
     }
 
     private void GameLoop_SaveLoaded(object? sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
@@ -30,6 +41,7 @@ public sealed partial class ModEntry : Mod
         if (LocalizedContentManager.CurrentLanguageCode != LocalizedContentManager.LanguageCode.mod)
             return;
 
+        // just fix Thai DateTime Format
         if (DayTimeMoneyBoxThaiFormat.IsApplyPatch)
             return;
 

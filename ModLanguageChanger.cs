@@ -1,6 +1,4 @@
-﻿using Microsoft.Xml.Serialization.GeneratedAssembly;
-using Microsoft.Xna.Framework.Graphics;
-using StardewModdingAPI;
+﻿using StardewModdingAPI;
 using StardewValley;
 using StardewValley.GameData;
 
@@ -17,7 +15,7 @@ public sealed class ModLanguageChanger
         Instance = this;
     }
 
-    public void TrySetLanguageMode()
+    public void ApplyModLanguage()
     {
         //check if mod is not valid & restore lang with preference
         //fource mod lang

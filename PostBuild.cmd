@@ -6,7 +6,7 @@ if errorlevel 1 (
     exit /b
 )
 
- adb shell mkdir  "/storage/emulated/0/Android/data/%AppName%/files/Mods/ImproveGame"
- adb push "bin/ARM64/Release/net8.0/ImproveGame.dll" "/storage/emulated/0/Android/data/%AppName%/files/Mods/ImproveGame"
- adb push "bin/ARM64/Release/net8.0/manifest.json" "/storage/emulated/0/Android/data/%AppName%/files/Mods/ImproveGame"
+adb push "bin/ARM64/Release/net8.0/ImproveGame.dll" "/storage/emulated/0/Android/data/%AppName%/files/Mods/ImproveGame"
+adb push "bin/ARM64/Release/net8.0/manifest.json" "/storage/emulated/0/Android/data/%AppName%/files/Mods/ImproveGame"
 
+adb shell am start -n %AppName%"/crc64e91f1276c636690c.LauncherActivity" --ez "IsClickStartGame" true
