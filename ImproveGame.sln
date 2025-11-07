@@ -1,37 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11201.2
+VisualStudioVersion = 18.0.11201.2 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImproveGame", "ImproveGame.csproj", "{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImproveGame", "ImproveGame.csproj", "{8B7FC2D6-93B7-1738-4883-BD9B7717B0A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
 		Debug|ARM64 = Debug|ARM64
-		Mobile|Any CPU = Mobile|Any CPU
-		Mobile|ARM64 = Mobile|ARM64
-		Release|Any CPU = Release|Any CPU
 		Release|ARM64 = Release|ARM64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Debug|ARM64.ActiveCfg = Debug|ARM64
-		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Debug|ARM64.Build.0 = Debug|ARM64
-		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Mobile|Any CPU.ActiveCfg = Mobile|Any CPU
-		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Mobile|Any CPU.Build.0 = Mobile|Any CPU
-		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Mobile|ARM64.ActiveCfg = Mobile|Any CPU
-		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Mobile|ARM64.Build.0 = Mobile|Any CPU
-		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Release|Any CPU.Build.0 = Release|Any CPU
-		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Release|ARM64.ActiveCfg = Release|ARM64
-		{87AE1C33-B2CC-4BED-9C05-0430D1DD8267}.Release|ARM64.Build.0 = Release|ARM64
+		{8B7FC2D6-93B7-1738-4883-BD9B7717B0A0}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{8B7FC2D6-93B7-1738-4883-BD9B7717B0A0}.Debug|ARM64.Build.0 = Debug|ARM64
+		{8B7FC2D6-93B7-1738-4883-BD9B7717B0A0}.Release|ARM64.ActiveCfg = Release|ARM64
+		{8B7FC2D6-93B7-1738-4883-BD9B7717B0A0}.Release|ARM64.Build.0 = Release|ARM64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {520DFF37-7B7C-456B-B915-1B1BABCE919B}
+		SolutionGuid = {4E3346BA-5734-43BF-B056-0BCFF5EA30CE}
 	EndGlobalSection
 EndGlobal

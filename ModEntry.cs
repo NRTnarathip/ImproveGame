@@ -38,18 +38,16 @@ public sealed partial class ModEntry : Mod
 
     private void GameLoop_SaveLoaded(object? sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
     {
+        // remove this event
+        Helper.Events.GameLoop.SaveLoaded -= GameLoop_SaveLoaded;
+
         if (LocalizedContentManager.CurrentLanguageCode != LocalizedContentManager.LanguageCode.mod)
             return;
 
-        // just fix Thai DateTime Format
-        if (DayTimeMoneyBoxThaiFormat.IsApplyPatch)
-            return;
-
-        //check if mod thai then patch time format
+        // check if mod Thai then patch time format
         List<ModLanguage> modLanguages = Game1.content.Load<List<ModLanguage>>("Data\\AdditionalLanguages");
         var targetModLanguage = modLanguages.FirstOrDefault();
-        if (targetModLanguage != null & targetModLanguage.Id == "ELL.StardewValleyTHAI")
-            DayTimeMoneyBoxThaiFormat.Apply(ModEntry.Instance.harmony);
-
+        if (targetModLanguage?.Id == "ELL.StardewValleyTHAI")
+            DayTimeMoneyBoxThaiFormat.ApplyPatch(Instance.harmony);
     }
 }

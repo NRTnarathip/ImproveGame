@@ -6,15 +6,19 @@
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
 		<Platforms>ARM64</Platforms>
-		<EnableHarmony>true</EnableHarmony>
 
 		<!-- Manifest Config -->
 		<UniqueId>NRTnarathip.ImproveGame</UniqueId>
 		<Name>Improve Game</Name>
 		<Authors>NRTnarathip</Authors>
 		<Description>Support The Mod Language</Description>
-		<Version>2.0.1-beta.2</Version>
+		<Version>2.0.2</Version>
 		<MinimumApiVersion>4.1.7</MinimumApiVersion>
+
+		<!--Build Config-->
+		<EnableModDeploy>false</EnableModDeploy>
+		<EnableHarmony>true</EnableHarmony>
+
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,6 +29,12 @@
 	<ItemGroup>
 		<PackageReference Include="Leclair.Stardew.ModManifestBuilder" Version="2.4.1" />
 		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="manifest.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

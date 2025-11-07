@@ -9,7 +9,7 @@ namespace ImproveGame;
 public static class DayTimeMoneyBoxThaiFormat
 {
     public static bool IsApplyPatch { get; private set; } = false;
-    public static void Apply(Harmony harmony)
+    public static void ApplyPatch(Harmony harmony)
     {
         if (IsApplyPatch)
             return;

@@ -10,7 +10,7 @@
   "UniqueID": "NRTnarathip.ImproveGame",
   "Name": "Improve Game",
   "Author": "NRTnarathip",
-  "Version": "2.0.1-beta.2",
+  "Version": "2.0.2",
   "Description": "Support The Mod Language",
   "MinimumApiVersion": "4.1.7",
   "EntryDll": "ImproveGame.dll",
