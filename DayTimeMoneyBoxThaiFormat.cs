@@ -51,8 +51,13 @@ public static class DayTimeMoneyBoxThaiFormat
         //line:297: Utility.drawTextWithShadow(b, dateText,
         if (CallStack_drawTextWithShadow_Count == 2)
         {
-            text = LocalizedContentManager.FormatTimeString(Game1.timeOfDay,
-                LocalizedContentManager.CurrentModLanguage.TimeFormat).ToString();
+            // the HUD clock should use ClockTimeFormat (like desktop DayTimeMoneyBox does),
+            // falling back to TimeFormat if the language pack doesn't define it
+            var modLanguage = LocalizedContentManager.CurrentModLanguage;
+            var format = !string.IsNullOrWhiteSpace(modLanguage.ClockTimeFormat)
+                ? modLanguage.ClockTimeFormat
+                : modLanguage.TimeFormat;
+            text = LocalizedContentManager.FormatTimeString(Game1.timeOfDay, format).ToString();
         }
     }
 

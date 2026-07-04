@@ -44,10 +44,12 @@ public sealed partial class ModEntry : Mod
         if (LocalizedContentManager.CurrentLanguageCode != LocalizedContentManager.LanguageCode.mod)
             return;
 
-        // check if mod Thai then patch time format
+        // patch the HUD clock for any mod language that defines a time format
+        // (e.g. Thai ELL.StardewValleyTHAI, Ukrainian Pereclaw.ukrainizacija, ...)
         List<ModLanguage> modLanguages = Game1.content.Load<List<ModLanguage>>("Data\\AdditionalLanguages");
         var targetModLanguage = modLanguages.FirstOrDefault();
-        if (targetModLanguage?.Id == "ELL.StardewValleyTHAI")
+        if (!string.IsNullOrWhiteSpace(targetModLanguage?.ClockTimeFormat)
+            || !string.IsNullOrWhiteSpace(targetModLanguage?.TimeFormat))
             DayTimeMoneyBoxThaiFormat.ApplyPatch(Instance.harmony);
     }
 }
